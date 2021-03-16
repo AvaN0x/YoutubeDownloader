@@ -1,0 +1,79 @@
+﻿<Window x:Class="YoutubeDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YoutubeDownloader"
+        mc:Ignorable="d"
+        Title="Youtube Downloader"
+        Icon="https://avatars3.githubusercontent.com/u/27494805"
+        MinHeight="150"
+        Height="250"
+        MinWidth="280"
+        Width="500"
+        Topmost="True"
+        ResizeMode="CanResize"
+        Background="#26292f"
+        WindowStartupLocation="CenterScreen">
+    
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Vertical" Margin="0">
+            <ComboBox x:Name="cmbobox_extension"
+                      SelectedIndex="0"
+                      Margin="2"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="80">
+                <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
+                <ComboBoxItem x:Name="mp4" Content="MP4"></ComboBoxItem>
+            </ComboBox>
+
+            <TextBox x:Name="txtbx_input"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Disabled"
+                    Height="auto"
+                    Width="auto"
+                    MaxLines="1"
+                    Margin="2" PreviewKeyDown="txtbx_input_PreviewKeyDown" />
+        </StackPanel>
+
+        <!-- Bottom bar -->
+        <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="4">
+            <CheckBox x:Name="cb_OnTop"
+                      Content="Always on Top"
+                      IsChecked="True"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      FontSize="12"
+                      Height="16"
+                      Foreground="#fff"
+                      Margin="10 2 0 0"
+                      Checked="OnTop_Checked"
+                      Unchecked="OnTop_Unchecked" />
+            <TextBlock
+                FontSize="12"
+                Foreground="#fff"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0 0 10 0">
+                By
+                <Hyperlink NavigateUri="https://github.com/AvaN0x"
+                           Foreground="#fff"
+                           TextDecorations="None">
+                            github.com/AvaN0x
+                            <Image Source="https://avatars3.githubusercontent.com/u/27494805"
+                               VerticalAlignment="Center"
+                               Height="12px"
+                               Margin="2 0 0 0">
+                            </Image>
+                </Hyperlink>
+            </TextBlock>
+        </Grid>
+    </Grid>
+
+</Window>
