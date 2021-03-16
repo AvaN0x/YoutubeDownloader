@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +26,14 @@ namespace YoutubeDownloader
     {
         public MainWindow()
         {
-            Trace.WriteLine("text");
-            testVideoAsync("https://youtu.be/o-YBDTqX_ZU");
             InitializeComponent();
+
+            //Trace.WriteLine(Directory.GetCurrentDirectory());
+
+            txtbx_folder.Text = Directory.GetCurrentDirectory();
+
+            //testVideoAsync("https://youtu.be/o-YBDTqX_ZU");
+            //Directory.Exists("C:/Users/cleme/Downloads/");
         }
 
         public async Task testVideoAsync(String link)
@@ -41,7 +47,7 @@ namespace YoutubeDownloader
 
             if (streamInfo != null && video != null)
             {
-                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"C:\\Users\\cleme\\Downloads\\{video.Title}.mp3");
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"C:/Users/cleme/Downloads/{video.Title}.mp3");
                 Trace.WriteLine("download done");
             }
             else

@@ -15,31 +15,58 @@
         ResizeMode="CanResize"
         Background="#26292f"
         WindowStartupLocation="CenterScreen">
-    
-    <Grid Margin="0">
+
+    <Grid Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Vertical" Margin="0">
-            <ComboBox x:Name="cmbobox_extension"
+        <StackPanel 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch" 
+            Orientation="Vertical" 
+            Margin="0">
+
+            <DockPanel>
+                <ComboBox x:Name="cmbobox_extension"
                       SelectedIndex="0"
                       Margin="2"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       Width="80">
-                <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
-                <ComboBoxItem x:Name="mp4" Content="MP4"></ComboBoxItem>
-            </ComboBox>
+                    <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
+                    <ComboBoxItem x:Name="mp4" Content="MP4"></ComboBoxItem>
+                </ComboBox>
 
+
+                <Button x:Name="btn_folderDialog"
+                    DockPanel.Dock="Right"
+                    Margin="2"
+                    Padding="2">
+                    Select
+                </Button>
+                
+                <!-- Last to be able to grow -->
+                <TextBox x:Name="txtbx_folder"
+                    VerticalScrollBarVisibility="Disabled"
+                    Height="auto"
+                    MaxLines="1"
+                    Margin="60 2 2 2"
+                    Padding="2"
+                    IsReadOnly="True"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" />
+            </DockPanel>
+            
             <TextBox x:Name="txtbx_input"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Disabled"
                     Height="auto"
                     Width="auto"
                     MaxLines="1"
-                    Margin="2" PreviewKeyDown="txtbx_input_PreviewKeyDown" />
+                    Margin="2" 
+                    PreviewKeyDown="txtbx_input_PreviewKeyDown" />
         </StackPanel>
 
         <!-- Bottom bar -->
