@@ -22,13 +22,12 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel 
+        <DockPanel 
             HorizontalAlignment="Stretch" 
             VerticalAlignment="Stretch" 
-            Orientation="Vertical" 
             Margin="0">
 
-            <DockPanel>
+            <DockPanel DockPanel.Dock="Top">
                 <ComboBox x:Name="cmbobox_extension"
                       SelectedIndex="0"
                       Margin="2"
@@ -61,6 +60,7 @@
             </DockPanel>
             
             <TextBox x:Name="txtbx_input"
+                    DockPanel.Dock="Top"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Disabled"
                     Height="auto"
@@ -68,7 +68,42 @@
                     MaxLines="1"
                     Margin="2" 
                     PreviewKeyDown="txtbx_input_PreviewKeyDown" />
-        </StackPanel>
+            
+            <ScrollViewer
+                DockPanel.Dock="Bottom"
+                Margin="2">
+                <StackPanel x:Name="history">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock
+                            Grid.Column="0"
+                            TextAlignment="Left"
+                            HorizontalAlignment="Stretch"
+                            Foreground="#fff"
+                            Margin="2">
+                            Never gonna give you upNever gonna give you upNever gonna giveNever gonna give you up
+                        </TextBlock>
+
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                            <ProgressBar
+                                Width="40"
+                                Margin="2">
+                                
+                            </ProgressBar>
+                            <Button Margin="2">
+                                X
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
 
         <!-- Bottom bar -->
         <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="4">

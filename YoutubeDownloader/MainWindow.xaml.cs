@@ -31,6 +31,7 @@ namespace YoutubeDownloader
 
             //Trace.WriteLine(Directory.GetCurrentDirectory());
 
+
             txtbx_folder.Text = Directory.GetCurrentDirectory();
 
             //DownloadVideoAsync("https://youtu.be/o-YBDTqX_ZU");
