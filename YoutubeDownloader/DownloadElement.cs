@@ -98,7 +98,7 @@ namespace YoutubeDownloader
             try
             {
                 var youtube = new YoutubeClient();
-
+                
                 var video = await youtube.Videos.GetAsync(link);
 
                 // Wait for the information to be downloaded before displaying the grid

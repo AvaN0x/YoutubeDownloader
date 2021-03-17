@@ -16,6 +16,8 @@
         Background="#26292f"
         WindowStartupLocation="CenterScreen">
 
+    
+
     <Grid Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -68,13 +70,16 @@
                     MaxLines="1"
                     Margin="2" 
                     PreviewKeyDown="txtbx_input_PreviewKeyDown" />
+
             
+
             <ScrollViewer
                 DockPanel.Dock="Bottom"
-                Margin="2">
+                Padding="2 0"
+                VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="history">
 
-                    
+
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
