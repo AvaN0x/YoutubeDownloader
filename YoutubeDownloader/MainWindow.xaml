@@ -43,7 +43,8 @@
                 <Button x:Name="btn_folderDialog"
                     DockPanel.Dock="Right"
                     Margin="2"
-                    Padding="2">
+                    Padding="2"
+                    Click="btn_folderDialog_Click">
                     Select
                 </Button>
                 

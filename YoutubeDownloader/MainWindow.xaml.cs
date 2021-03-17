@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Winforms = System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -32,11 +33,11 @@ namespace YoutubeDownloader
 
             txtbx_folder.Text = Directory.GetCurrentDirectory();
 
-            //testVideoAsync("https://youtu.be/o-YBDTqX_ZU");
+            //DownloadVideoAsync("https://youtu.be/o-YBDTqX_ZU");
             //Directory.Exists("C:/Users/cleme/Downloads/");
         }
 
-        public async Task testVideoAsync(String link)
+        public async Task DownloadVideoAsync(String link)
         {
             var youtube = new YoutubeClient();
 
@@ -72,6 +73,15 @@ namespace YoutubeDownloader
 
                 Trace.WriteLine("Start download");
             }
+        }
+
+        private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
+        {
+            var fbd = new Winforms.FolderBrowserDialog();
+            Winforms.DialogResult result = fbd.ShowDialog();
+
+            if (result == Winforms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                txtbx_folder.Text = fbd.SelectedPath;
         }
     }
 }
