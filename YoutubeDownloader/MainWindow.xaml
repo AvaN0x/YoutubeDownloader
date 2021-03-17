@@ -97,8 +97,8 @@
                 Foreground="#fff"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Margin="0 0 10 0"
-                Text="By ">
+                Margin="0 0 10 0">
+                By
                 <Hyperlink NavigateUri="https://github.com/AvaN0x"
                            Foreground="#fff"
                            TextDecorations="None">
