@@ -17,7 +17,7 @@ namespace YoutubeDownloader
         public String link { get; set; } 
         public Grid grid { get; set; }
         private TextBlock label { get; set; }
-        private ProgressBar progress { get; set; }
+        private ProgressBar progressbar { get; set; }
 
         public DownloadElement(String link, String path)
         {
@@ -51,7 +51,7 @@ namespace YoutubeDownloader
                     Margin = new Thickness(2)
                 };
 
-                this.progress = new ProgressBar
+                this.progressbar = new ProgressBar
                 {
                     Width = 40,
                     Margin = new Thickness(2),
@@ -61,7 +61,7 @@ namespace YoutubeDownloader
                     Maximum = 100,
                     Value = 0
                 };
-                rightPanel.Children.Add(progress);
+                rightPanel.Children.Add(progressbar);
 
 
                 var button = new Button
@@ -110,15 +110,18 @@ namespace YoutubeDownloader
 
                 if (streamInfo != null)
                 {
-                    // TODO IProgress & CancellationToken
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, System.IO.Path.Combine(path, video.Title + ".mp3"));
-                    progress.Value = 100;
+                    var progress = new Progress<double>(percent =>
+                    {
+                        progressbar.Value = Math.Round(percent * 100);
+                    });
+
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, System.IO.Path.Combine(path, video.Title + ".mp3"), progress);
                 }
             } catch (ArgumentException)
             {
                 grid.Visibility = Visibility.Visible;
-                progress.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
-                progress.Value = 100;
+                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                progressbar.Value = 100;
             }
         }
     }
