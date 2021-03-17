@@ -35,7 +35,6 @@
                       VerticalAlignment="Top"
                       Width="80">
                     <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
-                    <ComboBoxItem x:Name="mp4" Content="MP4"></ComboBoxItem>
                 </ComboBox>
 
 
@@ -43,10 +42,11 @@
                     DockPanel.Dock="Right"
                     Margin="2"
                     Padding="2"
-                    Click="btn_folderDialog_Click">
-                    Select
-                </Button>
-                
+                    Click="btn_folderDialog_Click"
+                    Content="Select" />
+
+
+
                 <!-- Last to be able to grow -->
                 <TextBox x:Name="txtbx_folder"
                     VerticalScrollBarVisibility="Disabled"
@@ -73,34 +73,8 @@
                 DockPanel.Dock="Bottom"
                 Margin="2">
                 <StackPanel x:Name="history">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock
-                            Grid.Column="0"
-                            TextAlignment="Left"
-                            HorizontalAlignment="Stretch"
-                            Foreground="#fff"
-                            Margin="2">
-                            Never gonna give you upNever gonna give you upNever gonna giveNever gonna give you up
-                        </TextBlock>
 
-                        <StackPanel
-                            Grid.Column="1"
-                            Orientation="Horizontal">
-                            <ProgressBar
-                                Width="40"
-                                Margin="2">
-                                
-                            </ProgressBar>
-                            <Button Margin="2">
-                                X
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                    
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
@@ -123,8 +97,8 @@
                 Foreground="#fff"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Margin="0 0 10 0">
-                By
+                Margin="0 0 10 0"
+                Text="By ">
                 <Hyperlink NavigateUri="https://github.com/AvaN0x"
                            Foreground="#fff"
                            TextDecorations="None">

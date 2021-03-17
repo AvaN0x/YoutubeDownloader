@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="icons\close.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="YoutubeExplode" Version="5.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\close.png" />
   </ItemGroup>
 
 </Project>

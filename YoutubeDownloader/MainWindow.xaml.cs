@@ -25,35 +25,16 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<DownloadElement> downloads = new();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            //Trace.WriteLine(Directory.GetCurrentDirectory());
-
-
+            LoadHistory();
             txtbx_folder.Text = Directory.GetCurrentDirectory();
 
             //DownloadVideoAsync("https://youtu.be/o-YBDTqX_ZU");
-            //Directory.Exists("C:/Users/cleme/Downloads/");
-        }
-
-        public async Task DownloadVideoAsync(String link)
-        {
-            var youtube = new YoutubeClient();
-
-            var video = await youtube.Videos.GetAsync(link);
-            var streamManifest = await youtube.Videos.Streams.GetManifestAsync(link);
-
-            var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
-
-            if (streamInfo != null && video != null)
-            {
-                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"C:/Users/cleme/Downloads/{video.Title}.mp3");
-                Trace.WriteLine("download done");
-            }
-            else
-                Trace.WriteLine("is null");
         }
 
         private void OnTop_Checked(object sender, RoutedEventArgs e)
@@ -72,7 +53,9 @@ namespace YoutubeDownloader
             {
                 e.Handled = true;
 
-                Trace.WriteLine("Start download");
+                downloads.Insert(0, new DownloadElement(txtbx_input.Text.Trim(), txtbx_folder.Text));
+                txtbx_input.Text = "";
+                LoadHistory();
             }
         }
 
@@ -83,6 +66,14 @@ namespace YoutubeDownloader
 
             if (result == Winforms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 txtbx_folder.Text = fbd.SelectedPath;
+        }
+
+        private void LoadHistory()
+        {
+            history.Children.Clear();
+
+            foreach (DownloadElement dl in downloads)
+                history.Children.Add(dl.grid);
         }
     }
 }
