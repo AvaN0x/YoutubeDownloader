@@ -80,8 +80,7 @@ namespace YoutubeDownloader
                 progressbar.IsIndeterminate = false;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
 
-                // TODO remove file at path if exist
-                if (File.Exists(VideoPath))
+                if (VideoPath != null && File.Exists(VideoPath))
                 {
                     File.Delete(VideoPath);
                 }
