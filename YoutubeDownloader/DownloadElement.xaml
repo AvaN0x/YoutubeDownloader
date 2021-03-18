@@ -32,7 +32,20 @@
                 BorderThickness="0"
                 Margin="2"
                 d:Visibility="Visible"
-                Visibility="Collapsed" Click="open_Click">
+                Visibility="Collapsed"
+                Click="open_Click">
+                <Image Source="icons/run.png"
+                       Stretch="None" />
+            </Button>
+
+            <Button
+                x:Name="openFolder"
+                Background="Transparent"
+                BorderThickness="0"
+                Margin="2"
+                d:Visibility="Visible"
+                Visibility="Collapsed"
+                Click="openFolder_Click">
                 <Image Source="icons/openFolder.png"
                        Stretch="None" />
             </Button>
@@ -52,7 +65,8 @@
                 x:Name="close"
                 Background="Transparent"
                 BorderThickness="0"
-                Margin="2">
+                Margin="2"
+                Click="close_Click">
                 <Image Source="icons/close.png"
                        Stretch="None" />
             </Button>

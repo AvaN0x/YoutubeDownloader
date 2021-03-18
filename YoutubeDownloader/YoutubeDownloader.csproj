@@ -11,6 +11,7 @@
 	<ItemGroup>
 		<None Remove="icons\close.png" />
 		<None Remove="icons\openFolder.png" />
+		<None Remove="icons\run.png" />
 		<None Remove="icons\searchFolderClosed.png" />
 	</ItemGroup>
 
@@ -21,6 +22,7 @@
 	<ItemGroup>
 		<Resource Include="icons\close.png" />
 		<Resource Include="icons\openFolder.png" />
+		<Resource Include="icons\run.png" />
 		<Resource Include="icons\searchFolderClosed.png" />
 	</ItemGroup>
 </Project>

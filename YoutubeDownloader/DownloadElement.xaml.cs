@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +28,8 @@ namespace YoutubeDownloader
         public String Link { get; }
         public String? VideoPath { get; private set; }
 
+        private CancellationTokenSource? cancellationTokenSource { get; set; }
+
         public DownloadElement(String link)
         {
             InitializeComponent();
@@ -37,6 +41,8 @@ namespace YoutubeDownloader
         public async Task StartDownloadAsync(String path)
         {
             var youtube = new YoutubeClient();
+            cancellationTokenSource = new CancellationTokenSource();
+
             try
             {
                 var video = await youtube.Videos.GetAsync(Link);
@@ -56,10 +62,11 @@ namespace YoutubeDownloader
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress);
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, cancellationTokenSource.Token);
                     progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
 
                     open.Visibility = Visibility.Visible;
+                    openFolder.Visibility = Visibility.Visible;
                 }
             }
             catch (ArgumentException)
@@ -68,9 +75,34 @@ namespace YoutubeDownloader
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
                 progressbar.Value = 100;
             }
+            catch (OperationCanceledException)
+            {
+                progressbar.IsIndeterminate = false;
+                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+
+                // TODO remove file at path if exist
+                if (File.Exists(VideoPath))
+                {
+                    File.Delete(VideoPath);
+                }
+            }
         }
 
         private void open_Click(object sender, RoutedEventArgs e)
+        {
+            if (VideoPath != null)
+            {
+                new Process
+                {
+                    StartInfo = new ProcessStartInfo("explorer.exe", VideoPath)
+                    {
+                        UseShellExecute = true
+                    }
+                }.Start();
+            }
+        }
+
+        private void openFolder_Click(object sender, RoutedEventArgs e)
         {
             if (VideoPath != null)
             {
@@ -87,6 +119,14 @@ namespace YoutubeDownloader
         private string RemoveInvalidChars(string filename)
         {
             return string.Concat(filename.Split(System.IO.Path.GetInvalidFileNameChars()));
+        }
+
+        private void close_Click(object sender, RoutedEventArgs e)
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
         }
     }
 }
