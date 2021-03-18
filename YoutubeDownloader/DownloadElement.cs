@@ -95,10 +95,9 @@ namespace YoutubeDownloader
 
         public async Task DownloadVideoAsync(String link, String path)
         {
+            var youtube = new YoutubeClient();
             try
             {
-                var youtube = new YoutubeClient();
-                
                 var video = await youtube.Videos.GetAsync(link);
 
                 // Wait for the information to be downloaded before displaying the grid
@@ -115,7 +114,7 @@ namespace YoutubeDownloader
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, System.IO.Path.Combine(path, video.Title + ".mp3"), progress);
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, System.IO.Path.Combine(path, RemoveInvalidChars(video.Title) + ".mp3"), progress);
                 }
             } catch (ArgumentException)
             {
@@ -123,6 +122,11 @@ namespace YoutubeDownloader
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
                 progressbar.Value = 100;
             }
+        }
+
+        private string RemoveInvalidChars(string filename)
+        {
+            return string.Concat(filename.Split(System.IO.Path.GetInvalidFileNameChars()));
         }
     }
 }
