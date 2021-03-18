@@ -40,9 +40,12 @@
                 <Button x:Name="btn_folderDialog"
                     DockPanel.Dock="Right"
                     Margin="2"
-                    Padding="2"
-                    Click="btn_folderDialog_Click"
-                    Content="Select" />
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="btn_folderDialog_Click">
+                    <Image Source="icons/searchFolderClosed.png"
+                       Stretch="None" />
+                </Button>
 
                 <!-- Last to be able to grow -->
                 <TextBox x:Name="txtbx_folder"
