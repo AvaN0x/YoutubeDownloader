@@ -25,16 +25,16 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<DownloadElement> downloads = new();
+        private List<DownloadElement> downloads;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            downloads = new();
+
             LoadHistory();
             txtbx_folder.Text = Directory.GetCurrentDirectory();
-
-            //DownloadVideoAsync("https://youtu.be/o-YBDTqX_ZU");
         }
 
         private void OnTop_Checked(object sender, RoutedEventArgs e)
@@ -47,15 +47,20 @@ namespace YoutubeDownloader
             Topmost = false;
         }
 
-        private void txtbx_input_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void txtbx_input_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 e.Handled = true;
 
-                downloads.Insert(0, new DownloadElement(txtbx_input.Text.Trim(), txtbx_folder.Text));
+                var dl = new DownloadElement(txtbx_input.Text.Trim());
+
+                downloads.Insert(0, dl);
                 txtbx_input.Text = "";
+
                 LoadHistory();
+
+                await dl.StartDownloadAsync(txtbx_folder.Text);
             }
         }
 
@@ -73,7 +78,7 @@ namespace YoutubeDownloader
             history.Children.Clear();
 
             foreach (DownloadElement dl in downloads)
-                history.Children.Add(dl.grid);
+                history.Children.Add(dl);
         }
     }
 }

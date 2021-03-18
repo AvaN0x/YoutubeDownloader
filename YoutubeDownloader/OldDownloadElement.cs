@@ -12,14 +12,14 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader
 {
-    class DownloadElement
+    class OldDownloadElement
     {
         public String link { get; set; } 
         public Grid grid { get; set; }
         private TextBlock label { get; set; }
         private ProgressBar progressbar { get; set; }
 
-        public DownloadElement(String link, String path)
+        public OldDownloadElement(String link)
         {
             this.link = link;
 
@@ -87,13 +87,11 @@ namespace YoutubeDownloader
 
                 grid.Visibility = Visibility.Collapsed;
             }
-
-            _ = DownloadVideoAsync(link, path);
         }
 
 
 
-        public async Task DownloadVideoAsync(String link, String path)
+        public async Task StartDownloadAsync(String path)
         {
             var youtube = new YoutubeClient();
             try
@@ -101,8 +99,8 @@ namespace YoutubeDownloader
                 var video = await youtube.Videos.GetAsync(link);
 
                 // Wait for the information to be downloaded before displaying the grid
-                grid.Visibility = Visibility.Visible;
                 label.Text = video.Title;
+                grid.Visibility = Visibility.Visible;
 
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
