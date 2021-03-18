@@ -1,25 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>
-	<Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="icons\close.png" />
-    <None Remove="icons\openFolder.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="icons\close.png" />
+		<None Remove="icons\openFolder.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="YoutubeExplode" Version="5.1.9" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="YoutubeExplode" Version="5.1.9" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="icons\close.png" />
-    <Resource Include="icons\openFolder.png" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<Resource Include="icons\close.png" />
+		<Resource Include="icons\openFolder.png" />
+	</ItemGroup>
 </Project>

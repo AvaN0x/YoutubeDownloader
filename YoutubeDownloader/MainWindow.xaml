@@ -16,17 +16,15 @@
         Background="#26292f"
         WindowStartupLocation="CenterScreen">
 
-    
-
     <Grid Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <DockPanel 
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Stretch" 
+        <DockPanel
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Margin="0">
 
             <DockPanel DockPanel.Dock="Top">
@@ -39,15 +37,12 @@
                     <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
                 </ComboBox>
 
-
                 <Button x:Name="btn_folderDialog"
                     DockPanel.Dock="Right"
                     Margin="2"
                     Padding="2"
                     Click="btn_folderDialog_Click"
                     Content="Select" />
-
-
 
                 <!-- Last to be able to grow -->
                 <TextBox x:Name="txtbx_folder"
@@ -60,7 +55,7 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch" />
             </DockPanel>
-            
+
             <TextBox x:Name="txtbx_input"
                     DockPanel.Dock="Top"
                     TextWrapping="Wrap"
@@ -68,18 +63,14 @@
                     Height="auto"
                     Width="auto"
                     MaxLines="1"
-                    Margin="2" 
+                    Margin="2"
                     PreviewKeyDown="txtbx_input_PreviewKeyDown" />
-
-            
 
             <ScrollViewer
                 DockPanel.Dock="Bottom"
                 Padding="2 0"
                 VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="history">
-
-
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
@@ -117,5 +108,4 @@
             </TextBlock>
         </Grid>
     </Grid>
-
 </Window>

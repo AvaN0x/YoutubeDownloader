@@ -70,7 +70,6 @@ namespace YoutubeDownloader
             }
         }
 
-
         private void open_Click(object sender, RoutedEventArgs e)
         {
             if (VideoPath != null)
