@@ -47,6 +47,8 @@ namespace YoutubeDownloader
             progressbar.IsIndeterminate = true;
             redo.Visibility = Visibility.Collapsed;
             progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
+            // Close button is hidden while whe get informations about the video
+            close.Visibility = Visibility.Hidden;
 
             try
             {
@@ -56,13 +58,14 @@ namespace YoutubeDownloader
                 VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
                 progressbar.IsIndeterminate = false;
-                progressbar.Value = 0;
+                progressbar.Value = 1;
 
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(Link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
 
                 if (streamInfo != null)
                 {
+                    close.Visibility = Visibility.Visible;
                     CancelTokenSource = new CancellationTokenSource();
 
                     //if (File.Exists(VideoPath))
@@ -88,6 +91,7 @@ namespace YoutubeDownloader
             catch (ArgumentException)
             {
                 // Link is not a valid youtube link
+                close.Visibility = Visibility.Visible;
                 progressbar.IsIndeterminate = false;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
                 progressbar.Value = 100;
@@ -104,6 +108,7 @@ namespace YoutubeDownloader
                 }
 
                 redo.Visibility = Visibility.Visible;
+                close.Visibility = Visibility.Visible;
             }
         }
 

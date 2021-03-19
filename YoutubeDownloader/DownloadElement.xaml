@@ -67,11 +67,10 @@
                 Width="40"
                 MinHeight="8"
                 Margin="2 5"
-                Foreground="#179c22"
+                d:Foreground="#179c22"
                 Minimum="0"
                 Maximum="100"
-                Value="0"
-                IsIndeterminate="True" />
+                d:IsIndeterminate="True" />
 
             <Button
                 x:Name="close"
