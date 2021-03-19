@@ -68,10 +68,25 @@ namespace YoutubeDownloader
                     close.Visibility = Visibility.Visible;
                     CancelTokenSource = new CancellationTokenSource();
 
-                    //if (File.Exists(VideoPath))
-                    //{
-                    //    // TODO ask the user if we should rewrite or abandon
-                    //}
+                    if (File.Exists(VideoPath))
+                    {
+                        // ask the user if we should overwrite or abandon
+                        MessageBoxResult result = MessageBox.Show("This file already exist, do you want overwrite it ?\n" + VideoPath, "File already exist", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                        // Process message box results
+                        switch (result)
+                        {
+                            case MessageBoxResult.Yes:
+                                File.Delete(VideoPath);
+                                break;
+
+                            case MessageBoxResult.No:
+                            default:
+                                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                                redo.Visibility = Visibility.Visible;
+                                return;
+                        }
+                    }
 
                     var progress = new Progress<double>(percent =>
                     {
