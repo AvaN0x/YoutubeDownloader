@@ -28,7 +28,7 @@ namespace YoutubeDownloader
         public String Link { get; }
         public String? VideoPath { get; private set; }
 
-        private CancellationTokenSource? cancellationTokenSource { get; set; }
+        private CancellationTokenSource? CancelTokenSource { get; set; }
 
         public DownloadElement(String link)
         {
@@ -41,13 +41,13 @@ namespace YoutubeDownloader
         public async Task StartDownloadAsync(String path)
         {
             var youtube = new YoutubeClient();
-            cancellationTokenSource = new CancellationTokenSource();
+            CancelTokenSource = new CancellationTokenSource();
 
             try
             {
                 var video = await youtube.Videos.GetAsync(Link);
 
-                // Wait for the information to be downloaded before displaying the grid
+                // Now that the video have loaded, we can display the video title
                 VideoPath = System.IO.Path.Combine(path, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
                 progressbar.IsIndeterminate = false;
@@ -62,7 +62,7 @@ namespace YoutubeDownloader
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, cancellationTokenSource.Token);
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
                     progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
 
                     open.Visibility = Visibility.Visible;
@@ -71,6 +71,7 @@ namespace YoutubeDownloader
             }
             catch (ArgumentException)
             {
+                // Link is not a valid youtube link
                 progressbar.IsIndeterminate = false;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
                 progressbar.Value = 100;
@@ -118,9 +119,9 @@ namespace YoutubeDownloader
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
-            if (cancellationTokenSource != null)
+            if (CancelTokenSource != null)
             {
-                cancellationTokenSource.Cancel();
+                CancelTokenSource.Cancel();
             }
         }
     }
