@@ -27,6 +27,18 @@
             Margin="2">
 
             <Button
+                x:Name="redo"
+                Background="Transparent"
+                BorderThickness="0"
+                Margin="2"
+                d:Visibility="Visible"
+                Visibility="Collapsed"
+                Click="redo_Click">
+                <Image Source="icons/redo.png"
+                       Stretch="None" />
+            </Button>
+
+            <Button
                 x:Name="open"
                 Background="Transparent"
                 BorderThickness="0"

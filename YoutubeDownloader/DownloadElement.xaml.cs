@@ -27,7 +27,7 @@ namespace YoutubeDownloader
     {
         public String Link { get; }
         public String? VideoPath { get; private set; }
-
+        public String? FolderPath { get; private set; }
         private CancellationTokenSource? CancelTokenSource { get; set; }
 
         public DownloadElement(String link)
@@ -41,30 +41,46 @@ namespace YoutubeDownloader
         public async Task StartDownloadAsync(String path)
         {
             var youtube = new YoutubeClient();
-            CancelTokenSource = new CancellationTokenSource();
+            FolderPath = path;
+
+            // Add back indetermination to progressbar
+            progressbar.IsIndeterminate = true;
+            redo.Visibility = Visibility.Collapsed;
+            progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
 
             try
             {
                 var video = await youtube.Videos.GetAsync(Link);
 
                 // Now that the video have loaded, we can display the video title
-                VideoPath = System.IO.Path.Combine(path, Utils.RemoveInvalidChars(video.Title) + ".mp3");
+                VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
                 progressbar.IsIndeterminate = false;
+                progressbar.Value = 0;
 
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(Link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
 
                 if (streamInfo != null)
                 {
+                    CancelTokenSource = new CancellationTokenSource();
+
+                    //if (File.Exists(VideoPath))
+                    //{
+                    //    // TODO ask the user if we should rewrite or abandon
+                    //}
+
                     var progress = new Progress<double>(percent =>
                     {
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
-                    progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
 
+                    CancelTokenSource = null;
+                    progressbar.Value = 100;
+                    progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
+                    redo.Visibility = Visibility.Collapsed;
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
                 }
@@ -86,6 +102,8 @@ namespace YoutubeDownloader
                 {
                     File.Delete(VideoPath);
                 }
+
+                redo.Visibility = Visibility.Visible;
             }
         }
 
@@ -123,6 +141,18 @@ namespace YoutubeDownloader
             {
                 CancelTokenSource.Cancel();
             }
+            else
+            {
+                // TODO remove it from the list in MainWindow
+            }
+        }
+
+        private async void redo_Click(object sender, RoutedEventArgs e)
+        {
+            if (FolderPath != null)
+                await StartDownloadAsync(FolderPath);
+            else
+                redo.Visibility = Visibility.Collapsed;
         }
     }
 }
