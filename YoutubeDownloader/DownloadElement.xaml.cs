@@ -48,7 +48,7 @@ namespace YoutubeDownloader
                 var video = await youtube.Videos.GetAsync(Link);
 
                 // Wait for the information to be downloaded before displaying the grid
-                VideoPath = System.IO.Path.Combine(path, RemoveInvalidChars(video.Title) + ".mp3");
+                VideoPath = System.IO.Path.Combine(path, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
                 progressbar.IsIndeterminate = false;
 
@@ -77,6 +77,7 @@ namespace YoutubeDownloader
             }
             catch (OperationCanceledException)
             {
+                // ConcellationToken event
                 progressbar.IsIndeterminate = false;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
 
@@ -113,11 +114,6 @@ namespace YoutubeDownloader
                     }
                 }.Start();
             }
-        }
-
-        private string RemoveInvalidChars(string filename)
-        {
-            return string.Concat(filename.Split(System.IO.Path.GetInvalidFileNameChars()));
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
