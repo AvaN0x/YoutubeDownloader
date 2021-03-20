@@ -53,14 +53,35 @@ namespace YoutubeDownloader
             {
                 e.Handled = true;
 
-                var dl = new DownloadElement(txtbx_input.Text.Trim());
+                // We check to see if it is a playlist, then we create a DownloadElement for each video of the playlist
+                // Else we check if it is a video
+                try
+                {
+                    var youtube = new YoutubeClient();
+                    var playlist = await youtube.Playlists.GetAsync(txtbx_input.Text.Trim());
 
-                downloads.Insert(0, dl);
-                txtbx_input.Text = "";
+                    txtbx_input.Text = "";
+                    await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
+                    {
+                        var dl = new DownloadElement(video.Url);
+                        downloads.Insert(0, dl);
 
-                LoadHistory();
+                        LoadHistory();
 
-                await dl.StartDownloadAsync(txtbx_folder.Text);
+                        _ = dl.StartDownloadAsync(txtbx_folder.Text);
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    var dl = new DownloadElement(txtbx_input.Text.Trim());
+
+                    downloads.Insert(0, dl);
+                    txtbx_input.Text = "";
+
+                    LoadHistory();
+
+                    await dl.StartDownloadAsync(txtbx_folder.Text);
+                }
             }
         }
 

@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="YoutubeExplode" Version="5.1.9" />
+		<PackageReference Include="YoutubeExplode" Version="6.0.0-alpha" />
 	</ItemGroup>
 
 	<ItemGroup>
