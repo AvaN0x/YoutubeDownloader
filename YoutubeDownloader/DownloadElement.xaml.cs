@@ -161,10 +161,18 @@ namespace YoutubeDownloader
             if (CancelTokenSource != null)
             {
                 CancelTokenSource.Cancel();
+                CancelTokenSource = null;
             }
             else
             {
-                // TODO remove it from the list in MainWindow
+                try
+                {
+                    ((StackPanel)this.Parent).Children.Remove(this);
+                }
+                catch (Exception)
+                {
+                    close.Visibility = Visibility.Hidden;
+                }
             }
         }
 

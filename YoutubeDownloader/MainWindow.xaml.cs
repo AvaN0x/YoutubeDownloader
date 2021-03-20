@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
+using YoutubeExplode.Exceptions;
 
 namespace YoutubeDownloader
 {
@@ -25,15 +26,10 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<DownloadElement> downloads;
-
         public MainWindow()
         {
             InitializeComponent();
 
-            downloads = new();
-
-            LoadHistory();
             txtbx_folder.Text = Directory.GetCurrentDirectory();
         }
 
@@ -64,21 +60,17 @@ namespace YoutubeDownloader
                     await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
                         var dl = new DownloadElement(video.Url, txtbx_folder.Text);
-                        downloads.Insert(0, dl);
-
-                        LoadHistory();
+                        history.Children.Insert(0, dl);
 
                         _ = dl.StartDownloadAsync();
                     }
                 }
-                catch (ArgumentException)
+                catch (Exception)
                 {
                     var dl = new DownloadElement(txtbx_input.Text.Trim(), txtbx_folder.Text);
 
-                    downloads.Insert(0, dl);
+                    history.Children.Insert(0, dl);
                     txtbx_input.Text = "";
-
-                    LoadHistory();
 
                     await dl.StartDownloadAsync();
                 }
@@ -92,14 +84,6 @@ namespace YoutubeDownloader
 
             if (result == Winforms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 txtbx_folder.Text = fbd.SelectedPath;
-        }
-
-        private void LoadHistory()
-        {
-            history.Children.Clear();
-
-            foreach (DownloadElement dl in downloads)
-                history.Children.Add(dl);
         }
     }
 }
