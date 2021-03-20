@@ -63,24 +63,24 @@ namespace YoutubeDownloader
                     txtbx_input.Text = "";
                     await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
-                        var dl = new DownloadElement(video.Url);
+                        var dl = new DownloadElement(video.Url, txtbx_folder.Text);
                         downloads.Insert(0, dl);
 
                         LoadHistory();
 
-                        _ = dl.StartDownloadAsync(txtbx_folder.Text);
+                        _ = dl.StartDownloadAsync();
                     }
                 }
                 catch (ArgumentException)
                 {
-                    var dl = new DownloadElement(txtbx_input.Text.Trim());
+                    var dl = new DownloadElement(txtbx_input.Text.Trim(), txtbx_folder.Text);
 
                     downloads.Insert(0, dl);
                     txtbx_input.Text = "";
 
                     LoadHistory();
 
-                    await dl.StartDownloadAsync(txtbx_folder.Text);
+                    await dl.StartDownloadAsync();
                 }
             }
         }

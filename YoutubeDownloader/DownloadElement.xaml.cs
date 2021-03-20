@@ -27,21 +27,22 @@ namespace YoutubeDownloader
     {
         public String Link { get; }
         public String? VideoPath { get; private set; }
-        public String? FolderPath { get; private set; }
+        public String FolderPath { get; private set; }
         private CancellationTokenSource? CancelTokenSource { get; set; }
 
-        public DownloadElement(String link)
+        public DownloadElement(String link, String path)
         {
             InitializeComponent();
 
             this.Link = link;
+            this.FolderPath = path;
+
             label.Text = Link;
         }
 
-        public async Task StartDownloadAsync(String path)
+        public async Task StartDownloadAsync()
         {
             var youtube = new YoutubeClient();
-            FolderPath = path;
 
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
@@ -169,10 +170,7 @@ namespace YoutubeDownloader
 
         private async void redo_Click(object sender, RoutedEventArgs e)
         {
-            if (FolderPath != null)
-                await StartDownloadAsync(FolderPath);
-            else
-                redo.Visibility = Visibility.Collapsed;
+            await StartDownloadAsync();
         }
     }
 }
