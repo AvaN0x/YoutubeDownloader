@@ -31,6 +31,7 @@ namespace YoutubeDownloader
 
             this.Link = link;
             this.FolderPath = path;
+            CancelTokenSource = new CancellationTokenSource();
 
             label.Text = Link;
         }
@@ -38,7 +39,7 @@ namespace YoutubeDownloader
         public String FolderPath { get; private set; }
         public String Link { get; }
         public String? VideoPath { get; private set; }
-        private CancellationTokenSource? CancelTokenSource { get; set; }
+        private CancellationTokenSource CancelTokenSource { get; set; }
 
         public async Task StartDownloadAsync()
         {
@@ -48,12 +49,12 @@ namespace YoutubeDownloader
             progressbar.IsIndeterminate = true;
             redo.Visibility = Visibility.Hidden;
             progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
-            // Close button is hidden while whe get informations about the video
-            close.Visibility = Visibility.Hidden;
 
             try
             {
                 var video = await youtube.Videos.GetAsync(Link);
+                if (CancelTokenSource.IsCancellationRequested)
+                    throw new OperationCanceledException();
 
                 // Now that the video have loaded, we can display the video title
                 VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
@@ -63,12 +64,11 @@ namespace YoutubeDownloader
 
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(Link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+                if (CancelTokenSource.IsCancellationRequested)
+                    throw new OperationCanceledException();
 
                 if (streamInfo != null)
                 {
-                    close.Visibility = Visibility.Visible;
-                    CancelTokenSource = new CancellationTokenSource();
-
                     if (File.Exists(VideoPath))
                     {
                         // ask the user if we should overwrite or abandon
@@ -95,13 +95,15 @@ namespace YoutubeDownloader
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
+                    if (CancelTokenSource.IsCancellationRequested)
+                        throw new OperationCanceledException();
 
-                    CancelTokenSource = null;
                     progressbar.Value = 100;
                     progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
                     redo.Visibility = Visibility.Hidden;
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
+                    CancelTokenSource.Cancel();
                 }
             }
             catch (ArgumentException)
@@ -116,6 +118,7 @@ namespace YoutubeDownloader
             {
                 // ConcellationToken event
                 progressbar.IsIndeterminate = false;
+                progressbar.Value = 100;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
 
                 if (VideoPath != null && File.Exists(VideoPath))
@@ -130,10 +133,9 @@ namespace YoutubeDownloader
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
-            if (CancelTokenSource != null)
+            if (!CancelTokenSource.IsCancellationRequested)
             {
                 CancelTokenSource.Cancel();
-                CancelTokenSource = null;
             }
             else
             {
@@ -178,6 +180,7 @@ namespace YoutubeDownloader
 
         private async void redo_Click(object sender, RoutedEventArgs e)
         {
+            CancelTokenSource = new CancellationTokenSource();
             await StartDownloadAsync();
         }
     }
