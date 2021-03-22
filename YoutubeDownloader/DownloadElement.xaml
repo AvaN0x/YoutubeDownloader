@@ -15,6 +15,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
@@ -65,29 +67,27 @@
                 <Image Source="icons/openFolder.png"
                        Stretch="None" />
             </Button>
-
-            <ProgressBar
+        </StackPanel>
+        <ProgressBar
+                Grid.Column="2"
                 x:Name="progressbar"
-                Width="40"
-                MinHeight="8"
                 Margin="2 5"
                 d:Foreground="#179c22"
                 Minimum="0"
                 Maximum="100"
                 d:IsIndeterminate="True" />
-
-            <Button
+        <Button
+                Grid.Column="3"
                 x:Name="close"
                 Margin="2"
                 Style="{DynamicResource imageButton}"
                 Click="close_Click">
-                <Image Source="icons/close.png"
+            <Image Source="icons/close.png"
                        Stretch="None" />
-            </Button>
-        </StackPanel>
+        </Button>
         <Rectangle
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="4"
             VerticalAlignment="Bottom"
             Height="1"
             Fill="#444A55" />
