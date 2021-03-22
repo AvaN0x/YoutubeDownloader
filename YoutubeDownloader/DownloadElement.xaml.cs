@@ -25,6 +25,13 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class DownloadElement : UserControl
     {
+        public string FolderPath { get; private set; }
+        public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
+        public string Link { get; }
+        public string? VideoPath { get; private set; }
+        private CancellationTokenSource CancelTokenSource { get; set; }
+        private IStreamInfo? StreamInfo { get; set; }
+
         public DownloadElement(string link, string path)
         {
             InitializeComponent();
@@ -36,14 +43,13 @@ namespace YoutubeDownloader
             label.Text = Link;
         }
 
-        public string FolderPath { get; private set; }
-        public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
-        public string Link { get; }
-        public string? VideoPath { get; private set; }
-        private CancellationTokenSource CancelTokenSource { get; set; }
-        private IStreamInfo? StreamInfo { get; set; }
-
-        public void Cancel() => CancelTokenSource.Cancel();
+        public void Cancel()
+        {
+            CancelTokenSource.Cancel();
+            progressbar.IsIndeterminate = false;
+            progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+            progressbar.Value = 100;
+        }
 
         public async Task SetupAsync()
         {
@@ -91,19 +97,13 @@ namespace YoutubeDownloader
             catch (ArgumentException)
             {
                 // Link is not a valid youtube link
-                progressbar.IsIndeterminate = false;
-                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
-                progressbar.Value = 100;
-                CancelTokenSource.Cancel();
+                Cancel();
             }
             catch (OperationCanceledException)
             {
                 // ConcellationToken event
-                CancelTokenSource.Cancel();
                 StreamInfo = null;
-                progressbar.IsIndeterminate = false;
-                progressbar.Value = 100;
-                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                Cancel();
 
                 redo.Visibility = Visibility.Visible;
             }
@@ -141,10 +141,7 @@ namespace YoutubeDownloader
             catch (OperationCanceledException)
             {
                 // ConcellationToken event
-                CancelTokenSource.Cancel();
-                progressbar.IsIndeterminate = false;
-                progressbar.Value = 100;
-                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                Cancel();
 
                 if (VideoPath != null && File.Exists(VideoPath))
                 {
@@ -160,6 +157,9 @@ namespace YoutubeDownloader
             if (!CancelTokenSource.IsCancellationRequested)
             {
                 CancelTokenSource.Cancel();
+                progressbar.IsIndeterminate = false;
+                progressbar.Value = 100;
+                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
             }
             else
             {
