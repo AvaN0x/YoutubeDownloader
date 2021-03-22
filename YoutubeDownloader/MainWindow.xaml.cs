@@ -27,6 +27,8 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static YoutubeClient Youtube { get; } = new YoutubeClient();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -62,11 +64,10 @@ namespace YoutubeDownloader
                 // Else we check if it is a video
                 try
                 {
-                    var youtube = new YoutubeClient();
-                    var playlist = await youtube.Playlists.GetAsync(link);
+                    var playlist = await Youtube.Playlists.GetAsync(link);
 
                     txtbx_input.Text = "";
-                    await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
+                    await foreach (var video in Youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
                         var dl = new DownloadElement(video.Url, txtbx_folder.Text);
                         history.Children.Insert(0, dl);

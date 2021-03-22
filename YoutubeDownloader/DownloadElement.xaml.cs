@@ -25,7 +25,7 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class DownloadElement : UserControl
     {
-        public DownloadElement(String link, String path)
+        public DownloadElement(string link, string path)
         {
             InitializeComponent();
 
@@ -36,15 +36,13 @@ namespace YoutubeDownloader
             label.Text = Link;
         }
 
-        public String FolderPath { get; private set; }
-        public String Link { get; }
-        public String? VideoPath { get; private set; }
+        public string FolderPath { get; private set; }
+        public string Link { get; }
+        public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
 
         public async Task StartDownloadAsync()
         {
-            var youtube = new YoutubeClient();
-
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
             redo.Visibility = Visibility.Hidden;
@@ -52,7 +50,7 @@ namespace YoutubeDownloader
 
             try
             {
-                var video = await youtube.Videos.GetAsync(Link);
+                var video = await MainWindow.Youtube.Videos.GetAsync(Link);
                 if (CancelTokenSource.IsCancellationRequested)
                     throw new OperationCanceledException();
 
@@ -62,7 +60,7 @@ namespace YoutubeDownloader
                 progressbar.IsIndeterminate = false;
                 progressbar.Value = 1;
 
-                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(Link);
+                var streamManifest = await MainWindow.Youtube.Videos.Streams.GetManifestAsync(Link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
                 if (CancelTokenSource.IsCancellationRequested)
                     throw new OperationCanceledException();
@@ -94,7 +92,7 @@ namespace YoutubeDownloader
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
+                    await MainWindow.Youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
                     if (CancelTokenSource.IsCancellationRequested)
                         throw new OperationCanceledException();
 
