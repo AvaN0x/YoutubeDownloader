@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<None Remove="icons\close.png" />
+		<None Remove="icons\download.png" />
 		<None Remove="icons\openFolder.png" />
 		<None Remove="icons\redo.png" />
 		<None Remove="icons\run.png" />
@@ -22,6 +23,7 @@
 
 	<ItemGroup>
 		<Resource Include="icons\close.png" />
+		<Resource Include="icons\download.png" />
 		<Resource Include="icons\openFolder.png" />
 		<Resource Include="icons\redo.png" />
 		<Resource Include="icons\run.png" />

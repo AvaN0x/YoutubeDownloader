@@ -57,31 +57,32 @@ namespace YoutubeDownloader
 
         private async void TryDownloadLink(string link)
         {
-            // We check to see if it is a playlist, then we create a DownloadElement for each video of the playlist
-            // Else we check if it is a video
-            try
-            {
-                var youtube = new YoutubeClient();
-                var playlist = await youtube.Playlists.GetAsync(link);
-
-                txtbx_input.Text = "";
-                await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
+            if (link.Trim() != string.Empty)
+                // We check to see if it is a playlist, then we create a DownloadElement for each video of the playlist
+                // Else we check if it is a video
+                try
                 {
-                    var dl = new DownloadElement(video.Url, txtbx_folder.Text);
-                    history.Children.Insert(0, dl);
+                    var youtube = new YoutubeClient();
+                    var playlist = await youtube.Playlists.GetAsync(link);
 
-                    _ = dl.StartDownloadAsync();
+                    txtbx_input.Text = "";
+                    await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
+                    {
+                        var dl = new DownloadElement(video.Url, txtbx_folder.Text);
+                        history.Children.Insert(0, dl);
+
+                        _ = dl.StartDownloadAsync();
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                var dl = new DownloadElement(link, txtbx_folder.Text);
+                catch (Exception)
+                {
+                    var dl = new DownloadElement(link, txtbx_folder.Text);
 
-                history.Children.Insert(0, dl);
-                txtbx_input.Text = "";
+                    history.Children.Insert(0, dl);
+                    txtbx_input.Text = "";
 
-                await dl.StartDownloadAsync();
-            }
+                    await dl.StartDownloadAsync();
+                }
         }
 
         private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
@@ -91,6 +92,11 @@ namespace YoutubeDownloader
 
             if (result == Winforms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 txtbx_folder.Text = fbd.SelectedPath;
+        }
+
+        private void download_Click(object sender, RoutedEventArgs e)
+        {
+            TryDownloadLink(txtbx_input.Text.Trim());
         }
     }
 }

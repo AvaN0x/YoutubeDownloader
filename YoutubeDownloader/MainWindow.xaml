@@ -66,15 +66,24 @@
                     HorizontalContentAlignment="Stretch" />
             </DockPanel>
 
-            <TextBox x:Name="txtbx_input"
-                    DockPanel.Dock="Top"
+            <DockPanel DockPanel.Dock="Top">
+                <Button
+                    x:Name="download"
+                    DockPanel.Dock="Right"
+                    Margin="2"
+                    Style="{DynamicResource imageButton}" Click="download_Click">
+                    <Image Source="icons/download.png"
+                       Stretch="None" />
+                </Button>
+                <TextBox x:Name="txtbx_input"
+                    DockPanel.Dock="Left"
                     TextWrapping="Wrap"
                     VerticalScrollBarVisibility="Disabled"
                     Height="auto"
-                    Width="auto"
                     MaxLines="1"
                     Margin="2"
                     PreviewKeyDown="txtbx_input_PreviewKeyDown" />
+            </DockPanel>
 
             <ScrollViewer
                 DockPanel.Dock="Bottom"
