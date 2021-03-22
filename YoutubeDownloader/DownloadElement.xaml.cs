@@ -37,10 +37,13 @@ namespace YoutubeDownloader
         }
 
         public string FolderPath { get; private set; }
+        public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
         public string Link { get; }
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
+
+        public void Cancel() => CancelTokenSource.Cancel();
 
         public async Task SetupAsync()
         {
