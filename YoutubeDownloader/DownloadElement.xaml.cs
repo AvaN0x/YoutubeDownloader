@@ -57,8 +57,6 @@ namespace YoutubeDownloader
                 // Now that the video have loaded, we can display the video title
                 VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
-                progressbar.IsIndeterminate = false;
-                progressbar.Value = 1;
 
                 var streamManifest = await MainWindow.Youtube.Videos.Streams.GetManifestAsync(Link);
                 var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
@@ -92,6 +90,9 @@ namespace YoutubeDownloader
                         progressbar.Value = Math.Round(percent * 100);
                     });
 
+                    progressbar.IsIndeterminate = false;
+                    progressbar.Value = 1;
+
                     await MainWindow.Youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
                     if (CancelTokenSource.IsCancellationRequested)
                         throw new OperationCanceledException();
@@ -111,10 +112,12 @@ namespace YoutubeDownloader
                 progressbar.IsIndeterminate = false;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
                 progressbar.Value = 100;
+                CancelTokenSource.Cancel();
             }
             catch (OperationCanceledException)
             {
                 // ConcellationToken event
+                CancelTokenSource.Cancel();
                 progressbar.IsIndeterminate = false;
                 progressbar.Value = 100;
                 progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");

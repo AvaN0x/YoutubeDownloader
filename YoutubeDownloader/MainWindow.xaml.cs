@@ -19,6 +19,7 @@ using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using YoutubeExplode.Exceptions;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace YoutubeDownloader
 {
@@ -28,10 +29,17 @@ namespace YoutubeDownloader
     public partial class MainWindow : Window
     {
         public static YoutubeClient Youtube { get; } = new YoutubeClient();
+        private Task? CurrentDownload { get; set; }
+        private Queue<DownloadElement> Downloads { get; }
+        private Mutex Mutex { get; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            Downloads = new();
+            Mutex = new();
+            CurrentDownload = null;
 
             //txtbx_folder.Text = Directory.GetCurrentDirectory();
             txtbx_folder.Text = (string?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", null) ?? Directory.GetCurrentDirectory();
@@ -72,8 +80,12 @@ namespace YoutubeDownloader
                         var dl = new DownloadElement(video.Url, txtbx_folder.Text);
                         history.Children.Insert(0, dl);
 
-                        _ = dl.StartDownloadAsync();
+                        //_ = dl.StartDownloadAsync();
+                        Mutex.WaitOne();
+                        Downloads.Enqueue(dl);
+                        Mutex.ReleaseMutex();
                     }
+                    StartDownload();
                 }
                 catch (Exception)
                 {
@@ -82,8 +94,32 @@ namespace YoutubeDownloader
                     history.Children.Insert(0, dl);
                     txtbx_input.Text = "";
 
-                    await dl.StartDownloadAsync();
+                    //await dl.StartDownloadAsync();
+                    Mutex.WaitOne();
+                    Downloads.Enqueue(dl);
+                    Mutex.ReleaseMutex();
+                    StartDownload();
                 }
+        }
+
+        private void StartDownload()
+        {
+            Mutex.WaitOne();
+
+            if (Downloads.Any() && CurrentDownload is null)
+            {
+                var dl = Downloads.Dequeue();
+                CurrentDownload = dl.StartDownloadAsync().ContinueWith(t =>
+                {
+                    Mutex.WaitOne();
+                    CurrentDownload = null;
+                    Mutex.ReleaseMutex();
+
+                    Dispatcher.Invoke(StartDownload);
+                });
+            }
+
+            Mutex.ReleaseMutex();
         }
 
         private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
