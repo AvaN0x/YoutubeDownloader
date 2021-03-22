@@ -19,6 +19,7 @@ using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using YoutubeExplode.Exceptions;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace YoutubeDownloader
 {
@@ -27,9 +28,18 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static YoutubeClient Youtube { get; } = new YoutubeClient();
+        private Task? CurrentDownload { get; set; }
+        private Queue<DownloadElement> Downloads { get; }
+        private Mutex Mutex { get; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Downloads = new();
+            Mutex = new();
+            CurrentDownload = null;
 
             //txtbx_folder.Text = Directory.GetCurrentDirectory();
             txtbx_folder.Text = (string?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", null) ?? Directory.GetCurrentDirectory();
@@ -66,18 +76,24 @@ namespace YoutubeDownloader
                 // video of the playlist Else we check if it is a video
                 try
                 {
-                    var youtube = new YoutubeClient();
-                    var playlist = await youtube.Playlists.GetAsync(link);
+                    var playlist = await Youtube.Playlists.GetAsync(link);
 
                     txtbx_input.Text = "";
                     var playlistElement = new PlaylistElement(playlist.Title);
                     history.Children.Insert(0, playlistElement);
-                    await foreach (var video in youtube.Playlists.GetVideosAsync(playlist.Id))
+                    await foreach (var video in Youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
                         var dl = new DownloadElement(video.Url, txtbx_folder.Text);
                         playlistElement.AddElement(dl);
 
-                        _ = dl.StartDownloadAsync();
+                        _ = dl.SetupAsync().ContinueWith((t) =>
+                        {
+                            Mutex.WaitOne();
+                            Downloads.Enqueue(dl);
+                            Mutex.ReleaseMutex();
+
+                            Dispatcher.Invoke(StartDownload);
+                        });
                     }
                 }
                 catch (Exception)
@@ -87,11 +103,38 @@ namespace YoutubeDownloader
                     history.Children.Insert(0, dl);
                     txtbx_input.Text = "";
 
-                    await dl.StartDownloadAsync();
+                    _ = dl.SetupAsync().ContinueWith((t) =>
+                    {
+                        Mutex.WaitOne();
+                        Downloads.Enqueue(dl);
+                        Mutex.ReleaseMutex();
+
+                        Dispatcher.Invoke(StartDownload);
+                    });
                 }
         }
 
-        private void txtbx_input_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void StartDownload()
+        {
+            Mutex.WaitOne();
+
+            if (Downloads.Any() && CurrentDownload is null)
+            {
+                var dl = Downloads.Dequeue();
+                CurrentDownload = dl.StartDownloadAsync().ContinueWith(t =>
+                {
+                    Mutex.WaitOne();
+                    CurrentDownload = null;
+                    Mutex.ReleaseMutex();
+
+                    Dispatcher.Invoke(StartDownload);
+                });
+            }
+
+            Mutex.ReleaseMutex();
+        }
+
+        private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
         {
             if (e.Key == Key.Enter)
             {

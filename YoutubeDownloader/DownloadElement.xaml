@@ -75,21 +75,21 @@
             </Button>
         </StackPanel>
         <ProgressBar
-                Grid.Column="2"
-                x:Name="progressbar"
-                Margin="2 5"
-                d:Foreground="#179c22"
-                Minimum="0"
-                Maximum="100"
-                d:IsIndeterminate="True" />
+            Grid.Column="2"
+            x:Name="progressbar"
+            Margin="2 5"
+            d:Foreground="#179c22"
+            Minimum="0"
+            Maximum="100"
+            d:IsIndeterminate="True" />
         <Button
-                Grid.Column="3"
-                x:Name="close"
-                Margin="2"
-                Style="{DynamicResource imageButton}"
-                Click="close_Click">
+            Grid.Column="3"
+            x:Name="close"
+            Margin="2 2 0 2"
+            Style="{DynamicResource imageButton}"
+            Click="close_Click">
             <Image Source="icons/close.png"
-                       Stretch="None" />
+                Stretch="None" />
         </Button>
     </Grid>
 </UserControl>
