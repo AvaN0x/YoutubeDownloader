@@ -32,14 +32,13 @@
 
         <StackPanel
             Grid.Column="1"
-            Orientation="Horizontal"
-            Margin="2">
+            Orientation="Horizontal">
 
             <Button
                 x:Name="redo"
                 Margin="2"
                 d:Visibility="Visible"
-                Visibility="Collapsed"
+                Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="redo_Click">
                 <Image Source="icons/redo.png"
@@ -50,7 +49,7 @@
                 x:Name="open"
                 Margin="2"
                 d:Visibility="Visible"
-                Visibility="Collapsed"
+                Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="open_Click">
                 <Image Source="icons/run.png"
@@ -61,7 +60,7 @@
                 x:Name="openFolder"
                 Margin="2"
                 d:Visibility="Visible"
-                Visibility="Collapsed"
+                Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="openFolder_Click">
                 <Image Source="icons/openFolder.png"
