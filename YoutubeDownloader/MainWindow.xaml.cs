@@ -80,12 +80,15 @@ namespace YoutubeDownloader
                         var dl = new DownloadElement(video.Url, txtbx_folder.Text);
                         history.Children.Insert(0, dl);
 
-                        //_ = dl.StartDownloadAsync();
-                        Mutex.WaitOne();
-                        Downloads.Enqueue(dl);
-                        Mutex.ReleaseMutex();
+                        _ = dl.SetupAsync().ContinueWith((t) =>
+                        {
+                            Mutex.WaitOne();
+                            Downloads.Enqueue(dl);
+                            Mutex.ReleaseMutex();
+
+                            Dispatcher.Invoke(StartDownload);
+                        });
                     }
-                    StartDownload();
                 }
                 catch (Exception)
                 {
@@ -94,11 +97,14 @@ namespace YoutubeDownloader
                     history.Children.Insert(0, dl);
                     txtbx_input.Text = "";
 
-                    //await dl.StartDownloadAsync();
-                    Mutex.WaitOne();
-                    Downloads.Enqueue(dl);
-                    Mutex.ReleaseMutex();
-                    StartDownload();
+                    _ = dl.SetupAsync().ContinueWith((t) =>
+                    {
+                        Mutex.WaitOne();
+                        Downloads.Enqueue(dl);
+                        Mutex.ReleaseMutex();
+
+                        Dispatcher.Invoke(StartDownload);
+                    });
                 }
         }
 

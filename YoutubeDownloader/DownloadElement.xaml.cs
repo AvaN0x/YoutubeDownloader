@@ -40,8 +40,9 @@ namespace YoutubeDownloader
         public string Link { get; }
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
+        private IStreamInfo? StreamInfo { get; set; }
 
-        public async Task StartDownloadAsync()
+        public async Task SetupAsync()
         {
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
@@ -59,11 +60,11 @@ namespace YoutubeDownloader
                 label.Text = video.Title;
 
                 var streamManifest = await MainWindow.Youtube.Videos.Streams.GetManifestAsync(Link);
-                var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+                StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
                 if (CancelTokenSource.IsCancellationRequested)
                     throw new OperationCanceledException();
 
-                if (streamInfo != null)
+                if (StreamInfo is not null)
                 {
                     if (File.Exists(VideoPath))
                     {
@@ -79,12 +80,41 @@ namespace YoutubeDownloader
 
                             case MessageBoxResult.No:
                             default:
-                                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
-                                redo.Visibility = Visibility.Visible;
-                                return;
+                                throw new OperationCanceledException();
                         }
                     }
+                }
+            }
+            catch (ArgumentException)
+            {
+                // Link is not a valid youtube link
+                progressbar.IsIndeterminate = false;
+                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                progressbar.Value = 100;
+                CancelTokenSource.Cancel();
+            }
+            catch (OperationCanceledException)
+            {
+                // ConcellationToken event
+                CancelTokenSource.Cancel();
+                StreamInfo = null;
+                progressbar.IsIndeterminate = false;
+                progressbar.Value = 100;
+                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
 
+                redo.Visibility = Visibility.Visible;
+            }
+        }
+
+        public async Task StartDownloadAsync()
+        {
+            try
+            {
+                if (StreamInfo is not null && VideoPath is not null)
+                {
+                    if (CancelTokenSource.IsCancellationRequested)
+
+                        throw new OperationCanceledException();
                     var progress = new Progress<double>(percent =>
                     {
                         progressbar.Value = Math.Round(percent * 100);
@@ -93,7 +123,7 @@ namespace YoutubeDownloader
                     progressbar.IsIndeterminate = false;
                     progressbar.Value = 1;
 
-                    await MainWindow.Youtube.Videos.Streams.DownloadAsync(streamInfo, VideoPath, progress, CancelTokenSource.Token);
+                    await MainWindow.Youtube.Videos.Streams.DownloadAsync(StreamInfo, VideoPath, progress, CancelTokenSource.Token);
                     if (CancelTokenSource.IsCancellationRequested)
                         throw new OperationCanceledException();
 
@@ -104,15 +134,6 @@ namespace YoutubeDownloader
                     openFolder.Visibility = Visibility.Visible;
                     CancelTokenSource.Cancel();
                 }
-            }
-            catch (ArgumentException)
-            {
-                // Link is not a valid youtube link
-                close.Visibility = Visibility.Visible;
-                progressbar.IsIndeterminate = false;
-                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
-                progressbar.Value = 100;
-                CancelTokenSource.Cancel();
             }
             catch (OperationCanceledException)
             {
@@ -128,7 +149,6 @@ namespace YoutubeDownloader
                 }
 
                 redo.Visibility = Visibility.Visible;
-                close.Visibility = Visibility.Visible;
             }
         }
 
@@ -182,6 +202,7 @@ namespace YoutubeDownloader
         private async void redo_Click(object sender, RoutedEventArgs e)
         {
             CancelTokenSource = new CancellationTokenSource();
+            await SetupAsync();
             await StartDownloadAsync();
         }
     }
