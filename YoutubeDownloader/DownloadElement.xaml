@@ -6,6 +6,13 @@
              xmlns:local="clr-namespace:YoutubeDownloader"
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -28,11 +35,10 @@
 
             <Button
                 x:Name="redo"
-                Background="Transparent"
-                BorderThickness="0"
                 Margin="2"
                 d:Visibility="Visible"
                 Visibility="Collapsed"
+                Style="{DynamicResource imageButton}"
                 Click="redo_Click">
                 <Image Source="icons/redo.png"
                        Stretch="None" />
@@ -40,11 +46,10 @@
 
             <Button
                 x:Name="open"
-                Background="Transparent"
-                BorderThickness="0"
                 Margin="2"
                 d:Visibility="Visible"
                 Visibility="Collapsed"
+                Style="{DynamicResource imageButton}"
                 Click="open_Click">
                 <Image Source="icons/run.png"
                        Stretch="None" />
@@ -52,11 +57,10 @@
 
             <Button
                 x:Name="openFolder"
-                Background="Transparent"
-                BorderThickness="0"
                 Margin="2"
                 d:Visibility="Visible"
                 Visibility="Collapsed"
+                Style="{DynamicResource imageButton}"
                 Click="openFolder_Click">
                 <Image Source="icons/openFolder.png"
                        Stretch="None" />
@@ -74,13 +78,18 @@
 
             <Button
                 x:Name="close"
-                Background="Transparent"
-                BorderThickness="0"
                 Margin="2"
+                Style="{DynamicResource imageButton}"
                 Click="close_Click">
                 <Image Source="icons/close.png"
                        Stretch="None" />
             </Button>
         </StackPanel>
+        <Rectangle
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            VerticalAlignment="Bottom"
+            Height="1"
+            Fill="#444A55" />
     </Grid>
 </UserControl>
