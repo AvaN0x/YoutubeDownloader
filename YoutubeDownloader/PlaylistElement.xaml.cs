@@ -26,9 +26,28 @@ namespace YoutubeDownloader
             this.title.Text = title;
         }
 
-        public void AddElement(UIElement e) => videos.Children.Insert(0, e);
+        public void AddElement(DownloadElement e) => videos.Children.Insert(0, e);
+
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var elements = videos.Children.Cast<DownloadElement>();
+            if (elements.Any(e => !e.IsCanceled))
+                foreach (var element in elements)
+                    element.Cancel();
+            else
+            {
+                try
+                {
+                    ((StackPanel)this.Parent).Children.Remove(this);
+                }
+                catch (Exception)
+                {
+                    closeButton.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
 
         private void extander_Click(object sender, RoutedEventArgs e)
-            => videos.Visibility = videos.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    => videos.Visibility = videos.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
     }
 }

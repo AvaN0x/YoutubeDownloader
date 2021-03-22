@@ -13,33 +13,58 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Rectangle
+            Grid.Column="0"
             Grid.Row="0"
+            Grid.ColumnSpan="2"
             VerticalAlignment="Top"
             Height="1"
             Fill="#444A55" />
         <Rectangle
+            Grid.Column="0"
             Grid.Row="0"
             Grid.RowSpan="2"
             HorizontalAlignment="Left"
             Width="1"
             Fill="#444A55" />
         <Button
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
             x:Name="extander"
             Style="{DynamicResource imageButton}"
             Click="extander_Click" />
         <TextBlock
+            Grid.Column="0"
+            Grid.Row="0"
             d:Text="playlist name"
             Foreground="White"
             Name="title"
             Margin="3"
             IsHitTestVisible="False" />
+        <Button
+            Grid.Column="1"
+            Grid.Row="0"
+            x:Name="closeButton"
+            Margin="2"
+            Style="{DynamicResource imageButton}" Click="closeButton_Click">
+            <Image
+                Source="icons/close.png"
+                Stretch="None" />
+        </Button>
+
         <StackPanel
+            Grid.Column="0"
             Grid.Row="1"
+            Grid.ColumnSpan="2"
             x:Name="videos"
             Orientation="Vertical"
             Margin="20,0,0,0" />
