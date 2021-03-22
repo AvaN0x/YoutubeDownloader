@@ -25,11 +25,6 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class DownloadElement : UserControl
     {
-        public String Link { get; }
-        public String? VideoPath { get; private set; }
-        public String FolderPath { get; private set; }
-        private CancellationTokenSource? CancelTokenSource { get; set; }
-
         public DownloadElement(String link, String path)
         {
             InitializeComponent();
@@ -40,13 +35,18 @@ namespace YoutubeDownloader
             label.Text = Link;
         }
 
+        public String FolderPath { get; private set; }
+        public String Link { get; }
+        public String? VideoPath { get; private set; }
+        private CancellationTokenSource? CancelTokenSource { get; set; }
+
         public async Task StartDownloadAsync()
         {
             var youtube = new YoutubeClient();
 
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
-            redo.Visibility = Visibility.Collapsed;
+            redo.Visibility = Visibility.Hidden;
             progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
             // Close button is hidden while whe get informations about the video
             close.Visibility = Visibility.Hidden;
@@ -99,7 +99,7 @@ namespace YoutubeDownloader
                     CancelTokenSource = null;
                     progressbar.Value = 100;
                     progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
-                    redo.Visibility = Visibility.Collapsed;
+                    redo.Visibility = Visibility.Hidden;
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
                 }
@@ -128,6 +128,26 @@ namespace YoutubeDownloader
             }
         }
 
+        private void close_Click(object sender, RoutedEventArgs e)
+        {
+            if (CancelTokenSource != null)
+            {
+                CancelTokenSource.Cancel();
+                CancelTokenSource = null;
+            }
+            else
+            {
+                try
+                {
+                    ((StackPanel)this.Parent).Children.Remove(this);
+                }
+                catch (Exception)
+                {
+                    close.Visibility = Visibility.Hidden;
+                }
+            }
+        }
+
         private void open_Click(object sender, RoutedEventArgs e)
         {
             if (VideoPath != null)
@@ -153,26 +173,6 @@ namespace YoutubeDownloader
                         UseShellExecute = true
                     }
                 }.Start();
-            }
-        }
-
-        private void close_Click(object sender, RoutedEventArgs e)
-        {
-            if (CancelTokenSource != null)
-            {
-                CancelTokenSource.Cancel();
-                CancelTokenSource = null;
-            }
-            else
-            {
-                try
-                {
-                    ((StackPanel)this.Parent).Children.Remove(this);
-                }
-                catch (Exception)
-                {
-                    close.Visibility = Visibility.Hidden;
-                }
             }
         }
 
