@@ -15,6 +15,13 @@
         ResizeMode="CanResize"
         Background="#26292f"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Grid Margin="2">
         <Grid.RowDefinitions>
@@ -37,11 +44,11 @@
                     <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
                 </ComboBox>
 
-                <Button x:Name="btn_folderDialog"
+                <Button
+                    x:Name="btn_folderDialog"
                     DockPanel.Dock="Right"
                     Margin="2"
-                    Background="Transparent"
-                    BorderThickness="0"
+                    Style="{DynamicResource imageButton}"
                     Click="btn_folderDialog_Click">
                     <Image Source="icons/searchFolderClosed.png"
                        Stretch="None" />
