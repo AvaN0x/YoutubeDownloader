@@ -166,12 +166,20 @@ namespace YoutubeDownloader
             var configPath = Path.Combine(configDir, "config.json");
             if (File.Exists(configPath))
             {
-                var ser = new JsonSerializer();
-                using var stream = new JsonTextReader(new StreamReader(configPath))
+                try
                 {
-                    CloseInput = true,
-                };
-                return ser.Deserialize<Config>(stream) ?? new Config();
+                    var ser = new JsonSerializer();
+                    using var stream = new JsonTextReader(new StreamReader(configPath))
+                    {
+                        CloseInput = true,
+                    };
+                    return ser.Deserialize<Config>(stream) ?? new Config();
+                }
+                catch (Exception e)
+                {
+                    File.Move(configPath, Path.Combine(configDir, "config_" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".json"));
+                    Trace.WriteLine(e.StackTrace);
+                }
             }
 
             return new Config();
