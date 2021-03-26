@@ -6,14 +6,13 @@
         xmlns:local="clr-namespace:YoutubeDownloader"
         mc:Ignorable="d"
         Title="Youtube Downloader"
-        Icon="https://avatars3.githubusercontent.com/u/27494805"
         MinHeight="150"
         Height="250"
         MinWidth="280"
         Width="500"
         ResizeMode="CanResize"
         Background="#26292f"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Icon="res/icon.png">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -49,7 +48,7 @@
                     Margin="2"
                     Style="{DynamicResource imageButton}"
                     Click="btn_folderDialog_Click">
-                    <Image Source="icons/searchFolderClosed.png"
+                    <Image Source="res/searchFolderClosed.png"
                        Stretch="None" />
                 </Button>
 
@@ -71,7 +70,7 @@
                     DockPanel.Dock="Right"
                     Margin="2"
                     Style="{DynamicResource imageButton}" Click="download_Click">
-                    <Image Source="icons/download.png"
+                    <Image Source="res/download.png"
                        Stretch="None" />
                 </Button>
                 <TextBox x:Name="txtbx_input"

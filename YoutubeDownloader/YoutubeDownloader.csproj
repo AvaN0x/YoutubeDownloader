@@ -6,15 +6,18 @@
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Nullable>enable</Nullable>
+		<ApplicationIcon>res/icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="icons\close.png" />
-		<None Remove="icons\download.png" />
-		<None Remove="icons\openFolder.png" />
-		<None Remove="icons\redo.png" />
-		<None Remove="icons\run.png" />
-		<None Remove="icons\searchFolderClosed.png" />
+		<None Remove="res\close.png" />
+		<None Remove="res\download.png" />
+		<None Remove="res\icon.ico" />
+		<None Remove="res\icon.png" />
+		<None Remove="res\openFolder.png" />
+		<None Remove="res\redo.png" />
+		<None Remove="res\run.png" />
+		<None Remove="res\searchFolderClosed.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,11 +26,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="icons\close.png" />
-		<Resource Include="icons\download.png" />
-		<Resource Include="icons\openFolder.png" />
-		<Resource Include="icons\redo.png" />
-		<Resource Include="icons\run.png" />
-		<Resource Include="icons\searchFolderClosed.png" />
+		<Resource Include="res\close.png" />
+		<Resource Include="res\download.png" />
+		<Resource Include="res\icon.ico" />
+		<Resource Include="res\icon.png" />
+		<Resource Include="res\openFolder.png" />
+		<Resource Include="res\redo.png" />
+		<Resource Include="res\run.png" />
+		<Resource Include="res\searchFolderClosed.png" />
 	</ItemGroup>
 </Project>

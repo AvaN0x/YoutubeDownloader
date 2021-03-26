@@ -26,7 +26,7 @@
             VerticalAlignment="Top"
             Height="1"
             Fill="#444A55" />
-        
+
         <TextBlock
             Grid.Column="0"
             d:Text="link"
@@ -48,7 +48,7 @@
                 Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="redo_Click">
-                <Image Source="icons/redo.png"
+                <Image Source="res/redo.png"
                        Stretch="None" />
             </Button>
 
@@ -59,7 +59,7 @@
                 Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="open_Click">
-                <Image Source="icons/run.png"
+                <Image Source="res/run.png"
                        Stretch="None" />
             </Button>
 
@@ -70,7 +70,7 @@
                 Visibility="Hidden"
                 Style="{DynamicResource imageButton}"
                 Click="openFolder_Click">
-                <Image Source="icons/openFolder.png"
+                <Image Source="res/openFolder.png"
                        Stretch="None" />
             </Button>
         </StackPanel>
@@ -88,7 +88,7 @@
             Margin="2 2 0 2"
             Style="{DynamicResource imageButton}"
             Click="close_Click">
-            <Image Source="icons/close.png"
+            <Image Source="res/close.png"
                 Stretch="None" />
         </Button>
     </Grid>
