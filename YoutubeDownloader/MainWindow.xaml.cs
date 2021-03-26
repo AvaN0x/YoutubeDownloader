@@ -45,6 +45,7 @@ namespace YoutubeDownloader
             CurrentDownload = null;
 
             txtbx_folder.Text = Config.DownloadPath;
+            cb_OnTop.IsChecked = Config.TopMost;
         }
 
         private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
@@ -68,12 +69,20 @@ namespace YoutubeDownloader
 
         private void OnTop_Checked(object sender, RoutedEventArgs e)
         {
-            Topmost = true;
+            if (Topmost)
+            {
+                Topmost = true;
+                SaveConfig(Config);
+            }
         }
 
         private void OnTop_Unchecked(object sender, RoutedEventArgs e)
         {
-            Topmost = false;
+            if (!Topmost)
+            {
+                Topmost = false;
+                SaveConfig(Config);
+            }
         }
 
         private void StartDownload()

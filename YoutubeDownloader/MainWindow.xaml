@@ -11,7 +11,6 @@
         Height="250"
         MinWidth="280"
         Width="500"
-        Topmost="True"
         ResizeMode="CanResize"
         Background="#26292f"
         WindowStartupLocation="CenterScreen">
@@ -98,7 +97,6 @@
         <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="4">
             <CheckBox x:Name="cb_OnTop"
                       Content="Always on Top"
-                      IsChecked="True"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
                       FontSize="12"
