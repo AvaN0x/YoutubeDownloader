@@ -32,12 +32,12 @@ namespace YoutubeDownloader
         private CancellationTokenSource CancelTokenSource { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
 
-        public DownloadElement(string link, string path)
+        public DownloadElement(string link)
         {
             InitializeComponent();
 
             this.Link = link;
-            this.FolderPath = path;
+            this.FolderPath = MainWindow.Config.DownloadPath;
             CancelTokenSource = new CancellationTokenSource();
 
             label.Text = Link;

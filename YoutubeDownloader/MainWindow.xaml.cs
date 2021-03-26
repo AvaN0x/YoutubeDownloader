@@ -14,12 +14,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+//using System.Windows.Shapes;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using YoutubeExplode.Exceptions;
 using Microsoft.Win32;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace YoutubeDownloader
 {
@@ -28,6 +30,12 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Config Config { get; set; } = LoadConfig();
+        public static YoutubeClient Youtube { get; } = new YoutubeClient();
+        private Task? CurrentDownload { get; set; }
+        private Queue<DownloadElement> Downloads { get; }
+        private Mutex Mutex { get; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,14 +44,8 @@ namespace YoutubeDownloader
             Mutex = new();
             CurrentDownload = null;
 
-            //txtbx_folder.Text = Directory.GetCurrentDirectory();
-            txtbx_folder.Text = (string?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", null) ?? Directory.GetCurrentDirectory();
+            txtbx_folder.Text = Config.DownloadPath;
         }
-
-        public static YoutubeClient Youtube { get; } = new YoutubeClient();
-        private Task? CurrentDownload { get; set; }
-        private Queue<DownloadElement> Downloads { get; }
-        private Mutex Mutex { get; }
 
         private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
         {
@@ -51,7 +53,12 @@ namespace YoutubeDownloader
             Winforms.DialogResult result = fbd.ShowDialog();
 
             if (result == Winforms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            {
+                Config.DownloadPath = fbd.SelectedPath;
+                SaveConfig(Config);
+
                 txtbx_folder.Text = fbd.SelectedPath;
+            }
         }
 
         private void download_Click(object sender, RoutedEventArgs e)
@@ -103,7 +110,7 @@ namespace YoutubeDownloader
                     history.Children.Insert(0, playlistElement);
                     await foreach (var video in Youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
-                        var dl = new DownloadElement(video.Url, txtbx_folder.Text);
+                        var dl = new DownloadElement(video.Url);
                         playlistElement.AddElement(dl);
 
                         _ = dl.SetupAsync().ContinueWith((t) =>
@@ -118,7 +125,7 @@ namespace YoutubeDownloader
                 }
                 catch (Exception)
                 {
-                    var dl = new DownloadElement(link, txtbx_folder.Text);
+                    var dl = new DownloadElement(link);
 
                     history.Children.Insert(0, dl);
                     txtbx_input.Text = "";
@@ -142,6 +149,41 @@ namespace YoutubeDownloader
 
                 TryDownloadLink(txtbx_input.Text.Trim());
             }
+        }
+
+        public static Config LoadConfig()
+        {
+            string configDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(configDir, "config.json");
+            if (File.Exists(configPath))
+            {
+                var ser = new JsonSerializer();
+                using var stream = new JsonTextReader(new StreamReader(configPath))
+                {
+                    CloseInput = true,
+                };
+                return ser.Deserialize<Config>(stream) ?? new Config();
+            }
+
+            return new Config();
+        }
+
+        public static void SaveConfig(Config conf)
+        {
+            string configDir = Directory.GetCurrentDirectory();
+
+            var configPath = Path.Combine(configDir, "config.json");
+
+            if (!File.Exists(configPath))
+                Directory.CreateDirectory(configDir);
+
+            var ser = new JsonSerializer
+            {
+                Formatting = Formatting.Indented
+            };
+            using var JSONstream = new StreamWriter(configPath);
+            ser.Serialize(JSONstream, conf);
+            JSONstream.Flush();
         }
     }
 }
