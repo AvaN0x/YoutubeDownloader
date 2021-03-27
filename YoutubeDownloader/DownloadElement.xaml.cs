@@ -25,6 +25,10 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class DownloadElement : UserControl
     {
+        public static readonly Brush BRUSH_BLUE = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
+        public static readonly Brush BRUSH_RED = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+        public static readonly Brush BRUSH_GREEN = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
+
         public string FolderPath { get; private set; }
         public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
         public string Link { get; }
@@ -47,7 +51,7 @@ namespace YoutubeDownloader
         {
             CancelTokenSource.Cancel();
             progressbar.IsIndeterminate = false;
-            progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+            progressbar.Foreground = BRUSH_RED;
             progressbar.Value = 100;
         }
 
@@ -56,7 +60,7 @@ namespace YoutubeDownloader
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
             redo.Visibility = Visibility.Collapsed;
-            progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
+            progressbar.Foreground = BRUSH_GREEN;
 
             try
             {
@@ -131,7 +135,7 @@ namespace YoutubeDownloader
                         throw new OperationCanceledException();
 
                     progressbar.Value = 100;
-                    progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
+                    progressbar.Foreground = BRUSH_BLUE;
                     redo.Visibility = Visibility.Collapsed;
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
@@ -159,7 +163,7 @@ namespace YoutubeDownloader
                 CancelTokenSource.Cancel();
                 progressbar.IsIndeterminate = false;
                 progressbar.Value = 100;
-                progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+                progressbar.Foreground = BRUSH_RED;
             }
             else
             {
