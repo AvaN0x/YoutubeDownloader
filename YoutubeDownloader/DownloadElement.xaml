@@ -24,7 +24,7 @@
             Grid.ColumnSpan="4"
             VerticalAlignment="Top"
             Height="1"
-            Fill="#444A55" />
+            Fill="#343840" />
 
         <DockPanel
             Grid.Column="0">

@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<None Remove="res\close.png" />
 		<None Remove="res\download.png" />
+		<None Remove="res\expandRight.png" />
 		<None Remove="res\icon.ico" />
 		<None Remove="res\icon.png" />
 		<None Remove="res\openFolder.png" />
@@ -28,6 +29,7 @@
 	<ItemGroup>
 		<Resource Include="res\close.png" />
 		<Resource Include="res\download.png" />
+		<Resource Include="res\expandRight.png" />
 		<Resource Include="res\icon.ico" />
 		<Resource Include="res\icon.png" />
 		<Resource Include="res\openFolder.png" />

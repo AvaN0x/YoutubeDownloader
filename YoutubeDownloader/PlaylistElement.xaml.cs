@@ -48,6 +48,9 @@ namespace YoutubeDownloader
         }
 
         private void extander_Click(object sender, RoutedEventArgs e)
-                    => videos.Visibility = videos.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        {
+            videos.Visibility = videos.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            ((RotateTransform)expandImage.RenderTransform).Angle = videos.Visibility == Visibility.Visible ? 90 : 0;
+        }
     }
 }
