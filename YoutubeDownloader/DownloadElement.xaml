@@ -16,7 +16,6 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
@@ -27,36 +26,27 @@
             Height="1"
             Fill="#444A55" />
 
-        <TextBlock
-            Grid.Column="0"
-            d:Text="link"
-            x:Name="label"
-            TextAlignment="Left"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Center"
-            Foreground="White"
-            Margin="2" />
-
-        <StackPanel
-            Grid.Column="1"
-            Orientation="Horizontal">
+        <DockPanel
+            Grid.Column="0">
 
             <Button
-                x:Name="redo"
-                Margin="2"
+                x:Name="openFolder"
                 d:Visibility="Visible"
-                Visibility="Hidden"
+                DockPanel.Dock="Right"
+                Margin="2"
+                Visibility="Collapsed"
                 Style="{DynamicResource imageButton}"
-                Click="redo_Click">
-                <Image Source="res/redo.png"
+                Click="openFolder_Click">
+                <Image Source="res/openFolder.png"
                        Stretch="None" />
             </Button>
 
             <Button
                 x:Name="open"
-                Margin="2"
                 d:Visibility="Visible"
-                Visibility="Hidden"
+                DockPanel.Dock="Right"
+                Margin="2"
+                Visibility="Collapsed"
                 Style="{DynamicResource imageButton}"
                 Click="open_Click">
                 <Image Source="res/run.png"
@@ -64,18 +54,29 @@
             </Button>
 
             <Button
-                x:Name="openFolder"
-                Margin="2"
+                x:Name="redo"
                 d:Visibility="Visible"
-                Visibility="Hidden"
+                DockPanel.Dock="Right"
+                Margin="2"
+                Visibility="Collapsed"
                 Style="{DynamicResource imageButton}"
-                Click="openFolder_Click">
-                <Image Source="res/openFolder.png"
+                Click="redo_Click">
+                <Image Source="res/redo.png"
                        Stretch="None" />
             </Button>
-        </StackPanel>
+
+            <TextBlock
+                d:Text="link"
+                x:Name="label"
+                DockPanel.Dock="Left"
+                TextAlignment="Left"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Foreground="White"
+                Margin="2" />
+        </DockPanel>
         <ProgressBar
-            Grid.Column="2"
+            Grid.Column="1"
             x:Name="progressbar"
             Margin="2 5"
             d:Foreground="#179c22"
@@ -83,7 +84,7 @@
             Maximum="100"
             d:IsIndeterminate="True" />
         <Button
-            Grid.Column="3"
+            Grid.Column="2"
             x:Name="close"
             Margin="2 2 0 2"
             Style="{DynamicResource imageButton}"

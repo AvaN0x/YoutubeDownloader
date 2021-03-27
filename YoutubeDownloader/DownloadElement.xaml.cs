@@ -55,7 +55,7 @@ namespace YoutubeDownloader
         {
             // Add back indetermination to progressbar
             progressbar.IsIndeterminate = true;
-            redo.Visibility = Visibility.Hidden;
+            redo.Visibility = Visibility.Collapsed;
             progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
 
             try
@@ -132,7 +132,7 @@ namespace YoutubeDownloader
 
                     progressbar.Value = 100;
                     progressbar.Foreground = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
-                    redo.Visibility = Visibility.Hidden;
+                    redo.Visibility = Visibility.Collapsed;
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
                     CancelTokenSource.Cancel();
@@ -169,7 +169,7 @@ namespace YoutubeDownloader
                 }
                 catch (Exception)
                 {
-                    close.Visibility = Visibility.Hidden;
+                    close.Visibility = Visibility.Collapsed;
                 }
             }
         }
