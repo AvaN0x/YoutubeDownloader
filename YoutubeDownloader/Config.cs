@@ -10,7 +10,8 @@ namespace YoutubeDownloader
 {
     public enum Extension
     {
-        mp3
+        mp3,
+        mp4
     }
 
     public class Config

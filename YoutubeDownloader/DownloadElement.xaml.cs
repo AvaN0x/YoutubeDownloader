@@ -69,16 +69,32 @@ namespace YoutubeDownloader
                     throw new OperationCanceledException();
 
                 // Now that the video have loaded, we can display the video title
-                VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                 label.Text = video.Title;
 
                 var streamManifest = await MainWindow.Youtube.Videos.Streams.GetManifestAsync(Link);
-                StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+
+                switch (MainWindow.Config.Extension)
+                {
+                    case Extension.mp3:
+                        VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
+                        StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+                        break;
+
+                    case Extension.mp4:
+                    default:
+                        StreamInfo = streamManifest.GetMuxed().WithHighestVideoQuality();
+                        VideoPath = null;
+                        break;
+                }
+
                 if (CancelTokenSource.IsCancellationRequested)
                     throw new OperationCanceledException();
 
                 if (StreamInfo is not null)
                 {
+                    if (VideoPath is null)
+                        VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + "." + StreamInfo.Container);
+
                     if (File.Exists(VideoPath))
                     {
                         // ask the user if we should overwrite or abandon
