@@ -2,21 +2,36 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Diagnostics;
 
 namespace YoutubeDownloader
 {
-    [Serializable]
+    public enum Extension
+    {
+        mp3
+    }
+
     public class Config
     {
         private static readonly string DefaultDownloadPath = (string?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", null) ?? Directory.GetCurrentDirectory();
 
+        [JsonProperty("downloadPath")]
         public string DownloadPath { get; set; }
+
+        [JsonProperty("topMost")]
         public bool TopMost { get; set; }
+
+        [JsonProperty("extension")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Extension Extension { get; set; }
 
         public Config()
         {
             DownloadPath = DefaultDownloadPath;
             TopMost = true;
+            Extension = Extension.mp3;
         }
 
         [OnDeserialized]

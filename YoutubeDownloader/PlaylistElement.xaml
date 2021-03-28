@@ -67,8 +67,8 @@
             Grid.Column="1"
             Grid.Row="0"
             d:Text="playlist name"
+            x:Name="title"
             Foreground="White"
-            Name="title"
             Margin="3"
             IsHitTestVisible="False" />
 

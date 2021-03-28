@@ -39,8 +39,8 @@
                       Margin="2"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      Width="80">
-                    <ComboBoxItem x:Name="mp3" Content="MP3"></ComboBoxItem>
+                      Width="80"
+                      SelectionChanged="cmbobox_extension_SelectionChanged">
                 </ComboBox>
 
                 <Button

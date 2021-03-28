@@ -46,6 +46,56 @@ namespace YoutubeDownloader
 
             txtbx_folder.Text = Config.DownloadPath;
             cb_OnTop.IsChecked = Config.TopMost;
+
+            // We need to remove the event otherwise we would save the config each time we insert an element, and this would cause to lose the user extension config
+            cmbobox_extension.SelectionChanged -= cmbobox_extension_SelectionChanged;
+            {
+                foreach (Extension ext in Enum.GetValues(typeof(Extension)))
+                {
+                    switch (ext)
+                    {
+                        case Extension.mp3:
+                            cmbobox_extension.Items.Insert((int)ext, "MP3");
+                            break;
+
+                        default:
+                            // Display the Extension name
+                            cmbobox_extension.Items.Insert((int)ext, Enum.GetName(typeof(Extension), ext));
+                            break;
+                    }
+                }
+                cmbobox_extension.SelectedIndex = (int)Config.Extension;
+            }
+            cmbobox_extension.SelectionChanged += cmbobox_extension_SelectionChanged;
+        }
+
+        private void cmbobox_extension_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbobox_extension.SelectedIndex != (int)Config.Extension)
+            {
+                Config.Extension = (Extension)cmbobox_extension.SelectedIndex;
+                SaveConfig(Config);
+            }
+        }
+
+        private void OnTop_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!Topmost)
+            {
+                Topmost = true;
+                Config.TopMost = true;
+                SaveConfig(Config);
+            }
+        }
+
+        private void OnTop_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (Topmost)
+            {
+                Topmost = false;
+                Config.TopMost = false;
+                SaveConfig(Config);
+            }
         }
 
         private void btn_folderDialog_Click(object sender, RoutedEventArgs e)
@@ -65,24 +115,6 @@ namespace YoutubeDownloader
         private void download_Click(object sender, RoutedEventArgs e)
         {
             TryDownloadLink(txtbx_input.Text.Trim());
-        }
-
-        private void OnTop_Checked(object sender, RoutedEventArgs e)
-        {
-            if (Topmost)
-            {
-                Topmost = true;
-                SaveConfig(Config);
-            }
-        }
-
-        private void OnTop_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!Topmost)
-            {
-                Topmost = false;
-                SaveConfig(Config);
-            }
         }
 
         private void StartDownload()
