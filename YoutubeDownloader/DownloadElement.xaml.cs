@@ -2,20 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader
@@ -28,10 +19,12 @@ namespace YoutubeDownloader
         public static readonly Brush BRUSH_BLUE = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
         public static readonly Brush BRUSH_RED = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
         public static readonly Brush BRUSH_GREEN = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
+        public static readonly string TEMP_EXTENSION = ".ytdl";
 
-        public string FolderPath { get; private set; }
-        public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
         public string Link { get; }
+        public string FolderPath { get; private set; }
+        public Extension Extension { get; private set; }
+        public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
@@ -42,6 +35,7 @@ namespace YoutubeDownloader
 
             this.Link = link;
             this.FolderPath = MainWindow.Config.DownloadPath;
+            this.Extension = MainWindow.Config.Extension;
             CancelTokenSource = new CancellationTokenSource();
 
             label.Text = Link;
@@ -73,10 +67,10 @@ namespace YoutubeDownloader
 
                 var streamManifest = await MainWindow.Youtube.Videos.Streams.GetManifestAsync(Link);
 
-                switch (MainWindow.Config.Extension)
+                switch (Extension)
                 {
                     case Extension.mp3:
-                        VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
+                        VideoPath = Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
                         StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
                         break;
 
@@ -93,7 +87,7 @@ namespace YoutubeDownloader
                 if (StreamInfo is not null)
                 {
                     if (VideoPath is null)
-                        VideoPath = System.IO.Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + "." + StreamInfo.Container);
+                        VideoPath = Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + "." + StreamInfo.Container);
 
                     if (File.Exists(VideoPath))
                     {
@@ -104,7 +98,10 @@ namespace YoutubeDownloader
                         switch (result)
                         {
                             case MessageBoxResult.Yes:
-                                File.Delete(VideoPath);
+                                if (File.Exists(VideoPath))
+                                    File.Delete(VideoPath);
+                                if (File.Exists(VideoPath + TEMP_EXTENSION))
+                                    File.Delete(VideoPath + TEMP_EXTENSION);
                                 break;
 
                             case MessageBoxResult.No:
@@ -136,7 +133,6 @@ namespace YoutubeDownloader
                 if (StreamInfo is not null && VideoPath is not null)
                 {
                     if (CancelTokenSource.IsCancellationRequested)
-
                         throw new OperationCanceledException();
                     var progress = new Progress<double>(percent =>
                     {
@@ -146,7 +142,7 @@ namespace YoutubeDownloader
                     progressbar.IsIndeterminate = false;
                     progressbar.Value = 1;
 
-                    await MainWindow.Youtube.Videos.Streams.DownloadAsync(StreamInfo, VideoPath, progress, CancelTokenSource.Token);
+                    await MainWindow.Youtube.Videos.Streams.DownloadAsync(StreamInfo, VideoPath + TEMP_EXTENSION, progress, CancelTokenSource.Token);
                     if (CancelTokenSource.IsCancellationRequested)
                         throw new OperationCanceledException();
 
@@ -156,6 +152,8 @@ namespace YoutubeDownloader
                     open.Visibility = Visibility.Visible;
                     openFolder.Visibility = Visibility.Visible;
                     CancelTokenSource.Cancel();
+
+                    File.Move(VideoPath + TEMP_EXTENSION, VideoPath, true);
                 }
             }
             catch (OperationCanceledException)
@@ -163,9 +161,12 @@ namespace YoutubeDownloader
                 // ConcellationToken event
                 Cancel();
 
-                if (VideoPath != null && File.Exists(VideoPath))
+                if (VideoPath is not null)
                 {
-                    File.Delete(VideoPath);
+                    if (File.Exists(VideoPath))
+                        File.Delete(VideoPath);
+                    if (File.Exists(VideoPath + TEMP_EXTENSION))
+                        File.Delete(VideoPath + TEMP_EXTENSION);
                 }
 
                 redo.Visibility = Visibility.Visible;
