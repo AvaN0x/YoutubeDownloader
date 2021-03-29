@@ -98,8 +98,6 @@ namespace YoutubeDownloader
                         switch (result)
                         {
                             case MessageBoxResult.Yes:
-                                if (File.Exists(VideoPath))
-                                    File.Delete(VideoPath);
                                 if (File.Exists(VideoPath + TEMP_EXTENSION))
                                     File.Delete(VideoPath + TEMP_EXTENSION);
                                 break;

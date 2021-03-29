@@ -115,6 +115,7 @@ namespace YoutubeDownloader
         private void download_Click(object sender, RoutedEventArgs e)
         {
             TryDownloadLink(txtbx_input.Text.Trim());
+            txtbx_input.Text = "";
         }
 
         private void StartDownload()
@@ -139,29 +140,31 @@ namespace YoutubeDownloader
 
         private async void TryDownloadLink(string link)
         {
-            if (link.Trim() != string.Empty)
+            if (link.Trim() != string.Empty && !LinkAlreadyInDownloads(link))
                 // We check to see if it is a playlist, then we create a DownloadElement for each
                 // video of the playlist Else we check if it is a video
                 try
                 {
                     var playlist = await Youtube.Playlists.GetAsync(link);
 
-                    txtbx_input.Text = "";
-                    var playlistElement = new PlaylistElement(playlist.Title);
+                    var playlistElement = new PlaylistElement(link, playlist.Title);
                     history.Children.Insert(0, playlistElement);
                     await foreach (var video in Youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
-                        var dl = new DownloadElement(video.Url);
-                        playlistElement.AddElement(dl);
-
-                        _ = dl.SetupAsync().ContinueWith((t) =>
+                        if (!LinkAlreadyInDownloads(video.Url))
                         {
-                            Mutex.WaitOne();
-                            Downloads.Enqueue(dl);
-                            Mutex.ReleaseMutex();
+                            var dl = new DownloadElement(video.Url);
+                            playlistElement.AddElement(dl);
 
-                            Dispatcher.Invoke(StartDownload);
-                        });
+                            _ = dl.SetupAsync().ContinueWith((t) =>
+                            {
+                                Mutex.WaitOne();
+                                Downloads.Enqueue(dl);
+                                Mutex.ReleaseMutex();
+
+                                Dispatcher.Invoke(StartDownload);
+                            });
+                        }
                     }
                 }
                 catch (Exception)
@@ -169,7 +172,6 @@ namespace YoutubeDownloader
                     var dl = new DownloadElement(link);
 
                     history.Children.Insert(0, dl);
-                    txtbx_input.Text = "";
 
                     _ = dl.SetupAsync().ContinueWith((t) =>
                     {
@@ -182,6 +184,27 @@ namespace YoutubeDownloader
                 }
         }
 
+        private bool LinkAlreadyInDownloads(string link)
+        {
+            foreach (object child in history.Children)
+            {
+                if (child is PlaylistElement playlist)
+                {
+                    if (playlist.Link == link)
+                        return true;
+                    foreach (object plChild in playlist.videos.Children)
+                        if (plChild is DownloadElement dl)
+                            if (dl.Link == link)
+                                return true;
+                }
+                else if (child is DownloadElement dl)
+                    if (dl.Link == link)
+                        return true;
+            }
+
+            return false;
+        }
+
         private void txtbx_input_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -189,6 +212,7 @@ namespace YoutubeDownloader
                 e.Handled = true;
 
                 TryDownloadLink(txtbx_input.Text.Trim());
+                txtbx_input.Text = "";
             }
         }
 

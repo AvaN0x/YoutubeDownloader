@@ -20,9 +20,12 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class PlaylistElement : UserControl
     {
-        public PlaylistElement(string title)
+        public string Link { get; private set; }
+
+        public PlaylistElement(string link, string title)
         {
             InitializeComponent();
+            Link = link;
             this.title.Text = title;
         }
 
