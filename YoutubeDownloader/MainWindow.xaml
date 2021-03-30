@@ -10,7 +10,7 @@
         Height="250"
         MinWidth="280"
         Width="500"
-        Topmost="True"
+        Topmost="False"
         ResizeMode="CanResize"
         Background="#26292f"
         WindowStartupLocation="CenterScreen" Icon="res/icon.png">
