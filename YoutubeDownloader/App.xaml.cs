@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +16,9 @@ namespace YoutubeDownloader
     /// </summary>
     public partial class App : Application
     {
+        public const string URI_NAME = "ytdl";
+
+        private const string NamedPipeName = "{github.com/AvaN0x/YoutubeDownloader NamedPipeName}";
         private const string UniqueEventName = "{github.com/AvaN0x/YoutubeDownloader UniqueEventName}";
         private const string UniqueMutexName = "{github.com/AvaN0x/YoutubeDownloader UniqueMutexName}";
         private EventWaitHandle? _eventWaitHandle;
@@ -37,13 +42,31 @@ namespace YoutubeDownloader
                 // Trigger event of other instance
                 this._eventWaitHandle.Set();
 
+                var client = new NamedPipeClientStream(NamedPipeName);
+                client.Connect();
+                var writer = new StreamWriter(client);
+
+                // Send the arg to the other instance
+                if (e.Args.Length > 0)
+                {
+                    writer.WriteLine(e.Args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", ""));
+                    writer.Flush();
+                }
+
                 this.Shutdown();
                 return;
             }
 
+            if (e.Args.Length > 0)
+                Current.Dispatcher.BeginInvoke((Action)(
+                    () => ((MainWindow)Current.MainWindow).TryDownloadLink(e.Args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", ""))
+                ));
+
             // Create a thread that is waiting for the event
             new Thread(() =>
                 {
+                    var server = new NamedPipeServerStream(NamedPipeName);
+
                     while (this._eventWaitHandle.WaitOne())
                     {
                         Current.Dispatcher.BeginInvoke((Action)(
@@ -51,6 +74,7 @@ namespace YoutubeDownloader
                             {
                                 // We bring the window to foreground
                                 var mainWindow = (MainWindow)Current.MainWindow;
+
                                 if (mainWindow.WindowState == WindowState.Minimized || mainWindow.Visibility == Visibility.Hidden)
                                 {
                                     mainWindow.Show();
@@ -62,6 +86,16 @@ namespace YoutubeDownloader
                                 mainWindow.Topmost = true;
                                 mainWindow.Topmost = oldTopMost;
                                 mainWindow.Focus();
+
+                                // Access arg from other instance
+                                server.WaitForConnection();
+                                var reader = new StreamReader(server);
+
+                                var link = reader.ReadLine() ?? "";
+                                if (link is not null && link.Trim().Length > 0)
+                                    mainWindow.TryDownloadLink(link);
+
+                                server.Disconnect();
                             }
                         ));
                     }

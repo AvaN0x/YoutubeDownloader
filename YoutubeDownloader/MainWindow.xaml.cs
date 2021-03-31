@@ -138,7 +138,7 @@ namespace YoutubeDownloader
             Mutex.ReleaseMutex();
         }
 
-        private async void TryDownloadLink(string link)
+        public async void TryDownloadLink(string link)
         {
             if (link.Trim() != string.Empty && !LinkAlreadyInDownloads(link))
                 // We check to see if it is a playlist, then we create a DownloadElement for each
