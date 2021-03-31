@@ -80,9 +80,9 @@ namespace YoutubeDownloader
 
         private void OnTop_Checked(object sender, RoutedEventArgs e)
         {
-            if (!Topmost)
+            Topmost = true;
+            if (!Config.TopMost)
             {
-                Topmost = true;
                 Config.TopMost = true;
                 SaveConfig(Config);
             }
@@ -90,9 +90,9 @@ namespace YoutubeDownloader
 
         private void OnTop_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (Topmost)
+            Topmost = false;
+            if (Config.TopMost)
             {
-                Topmost = false;
                 Config.TopMost = false;
                 SaveConfig(Config);
             }
