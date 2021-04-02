@@ -84,6 +84,10 @@
                     PreviewKeyDown="txtbx_input_PreviewKeyDown" />
             </DockPanel>
 
+            <local:ErrorsContainer
+                x:Name="errorsContainer"
+                DockPanel.Dock="Top" />
+
             <ScrollViewer
                 DockPanel.Dock="Bottom"
                 Padding="2 0"

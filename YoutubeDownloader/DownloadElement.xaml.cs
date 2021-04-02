@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos.Streams;
 
 namespace YoutubeDownloader
@@ -17,7 +18,7 @@ namespace YoutubeDownloader
     public partial class DownloadElement : UserControl
     {
         public static readonly Brush BRUSH_BLUE = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#4e88d9");
-        public static readonly Brush BRUSH_RED = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#b8200f");
+        public static readonly Brush BRUSH_RED = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#F04747");
         public static readonly Brush BRUSH_GREEN = (Brush)(new System.Windows.Media.BrushConverter()).ConvertFromString("#179c22");
         public static readonly string TEMP_EXTENSION = ".ytdl";
 
@@ -25,6 +26,7 @@ namespace YoutubeDownloader
         public string FolderPath { get; private set; }
         public Extension Extension { get; private set; }
         public bool IsCanceled => CancelTokenSource.IsCancellationRequested;
+        public string? VideoFileName { get; private set; }
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
@@ -70,14 +72,14 @@ namespace YoutubeDownloader
                 switch (Extension)
                 {
                     case Extension.mp3:
-                        VideoPath = Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + ".mp3");
+                        VideoFileName = Utils.RemoveInvalidChars(video.Title) + ".mp3";
                         StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
                         break;
 
                     case Extension.mp4:
                     default:
                         StreamInfo = streamManifest.GetMuxed().WithHighestVideoQuality();
-                        VideoPath = null;
+                        VideoFileName = null;
                         break;
                 }
 
@@ -86,9 +88,10 @@ namespace YoutubeDownloader
 
                 if (StreamInfo is not null)
                 {
-                    if (VideoPath is null)
-                        VideoPath = Path.Combine(FolderPath, Utils.RemoveInvalidChars(video.Title) + "." + StreamInfo.Container);
+                    if (VideoFileName is null)
+                        VideoFileName = Utils.RemoveInvalidChars(video.Title) + "." + StreamInfo.Container;
 
+                    VideoPath = Path.Combine(FolderPath, VideoFileName);
                     if (File.Exists(VideoPath))
                     {
                         // ask the user if we should overwrite or abandon
@@ -118,6 +121,16 @@ namespace YoutubeDownloader
             {
                 // ConcellationToken event
                 StreamInfo = null;
+                Cancel();
+
+                redo.Visibility = Visibility.Visible;
+            }
+            catch (TransientFailureException e)
+            {
+                Trace.WriteLine(e.Message);
+
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
+
                 Cancel();
 
                 redo.Visibility = Visibility.Visible;

@@ -140,7 +140,7 @@ namespace YoutubeDownloader
 
         public async void TryDownloadLink(string link)
         {
-            if (link.Trim() != string.Empty && !LinkAlreadyInDownloads(link))
+            if (link.Trim() != string.Empty && !IsLinkAlreadyInDownloads(link))
                 // We check to see if it is a playlist, then we create a DownloadElement for each
                 // video of the playlist Else we check if it is a video
                 try
@@ -151,7 +151,7 @@ namespace YoutubeDownloader
                     history.Children.Insert(0, playlistElement);
                     await foreach (var video in Youtube.Playlists.GetVideosAsync(playlist.Id))
                     {
-                        if (!LinkAlreadyInDownloads(video.Url))
+                        if (!IsLinkAlreadyInDownloads(video.Url))
                         {
                             var dl = new DownloadElement(video.Url);
                             playlistElement.AddElement(dl);
@@ -166,6 +166,10 @@ namespace YoutubeDownloader
                             });
                         }
                     }
+                }
+                catch (TransientFailureException)
+                {
+                    errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
                 }
                 catch (Exception)
                 {
@@ -184,7 +188,7 @@ namespace YoutubeDownloader
                 }
         }
 
-        private bool LinkAlreadyInDownloads(string link)
+        private bool IsLinkAlreadyInDownloads(string link)
         {
             foreach (object child in history.Children)
             {
