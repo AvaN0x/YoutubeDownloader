@@ -49,7 +49,7 @@ namespace YoutubeDownloader
                 // Send the arg to the other instance
                 if (e.Args.Length > 0)
                 {
-                    writer.WriteLine(e.Args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", ""));
+                    writer.WriteLine(e.Args[0]);
                     writer.Flush();
                 }
 
@@ -58,9 +58,23 @@ namespace YoutubeDownloader
             }
 
             if (e.Args.Length > 0)
+            {
+                // arg[0] exemple : "https://youtu.be/dQw4w9WgXcQ;mp3"
+                var args = e.Args[0].Split(";");
+                string link = args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", "");
+                Extension? extension = null;
+
+                if (args.Length > 1)
+                    try
+                    {
+                        extension = (Extension?)Enum.Parse(typeof(Extension), args[1], true);
+                    }
+                    catch (Exception) { }
+
                 Current.Dispatcher.BeginInvoke((Action)(
-                    () => ((MainWindow)Current.MainWindow).TryDownloadLink(e.Args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", ""))
+                    () => ((MainWindow)Current.MainWindow).TryDownloadLink(link, extension)
                 ));
+            }
 
             // Create a thread that is waiting for the event
             new Thread(() =>
@@ -91,9 +105,22 @@ namespace YoutubeDownloader
                                 server.WaitForConnection();
                                 var reader = new StreamReader(server);
 
-                                var link = reader.ReadLine() ?? "";
-                                if (link is not null && link.Trim().Length > 0)
-                                    mainWindow.TryDownloadLink(link);
+                                var arg = reader.ReadLine() ?? "";
+                                if (arg is not null && arg.Trim().Length > 0)
+                                {
+                                    var args = arg.Split(";");
+                                    string link = args[0].Replace(URI_NAME + ":/", "").Replace(URI_NAME + ":", "");
+                                    Extension? extension = null;
+
+                                    if (args.Length > 1)
+                                        try
+                                        {
+                                            extension = (Extension?)Enum.Parse(typeof(Extension), args[1], true);
+                                        }
+                                        catch (Exception) { }
+
+                                    mainWindow.TryDownloadLink(link, extension);
+                                }
 
                                 server.Disconnect();
                             }

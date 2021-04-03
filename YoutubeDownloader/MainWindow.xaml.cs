@@ -58,6 +58,10 @@ namespace YoutubeDownloader
                             cmbobox_extension.Items.Insert((int)ext, "MP3");
                             break;
 
+                        case Extension.mp4:
+                            cmbobox_extension.Items.Insert((int)ext, "MP4");
+                            break;
+
                         default:
                             // Display the Extension name
                             cmbobox_extension.Items.Insert((int)ext, Enum.GetName(typeof(Extension), ext));
@@ -138,7 +142,7 @@ namespace YoutubeDownloader
             Mutex.ReleaseMutex();
         }
 
-        public async void TryDownloadLink(string link)
+        private async void TryDownloadLink(string link)
         {
             if (link.Trim() != string.Empty && !IsLinkAlreadyInDownloads(link))
                 // We check to see if it is a playlist, then we create a DownloadElement for each
@@ -188,21 +192,32 @@ namespace YoutubeDownloader
                 }
         }
 
+        public void TryDownloadLink(string link, Extension? extension)
+        {
+            if (extension is not null && Config.Extension != extension)
+            {
+                Config.Extension = (Extension)extension;
+                Dispatcher.Invoke(() => cmbobox_extension.SelectedIndex = (int)Config.Extension);
+                SaveConfig(Config);
+            }
+            TryDownloadLink(link);
+        }
+
         private bool IsLinkAlreadyInDownloads(string link)
         {
             foreach (object child in history.Children)
             {
                 if (child is PlaylistElement playlist)
                 {
-                    if (playlist.Link == link)
+                    if (playlist.Link == link && playlist.Extension == Config.Extension)
                         return true;
                     foreach (object plChild in playlist.videos.Children)
                         if (plChild is DownloadElement dl)
-                            if (dl.Link == link)
+                            if (dl.Link == link && dl.Extension == Config.Extension)
                                 return true;
                 }
                 else if (child is DownloadElement dl)
-                    if (dl.Link == link)
+                    if (dl.Link == link && dl.Extension == Config.Extension)
                         return true;
             }
 
