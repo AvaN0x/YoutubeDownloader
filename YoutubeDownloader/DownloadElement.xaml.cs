@@ -29,6 +29,7 @@ namespace YoutubeDownloader
         public string? VideoFileName { get; private set; }
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
+        private FileSystemWatcher FileWatcher { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
 
         public DownloadElement(string link)
@@ -165,6 +166,30 @@ namespace YoutubeDownloader
                     CancelTokenSource.Cancel();
 
                     File.Move(VideoPath + TEMP_EXTENSION, VideoPath, true);
+
+                    if (VideoFileName is not null)
+                    {
+                        FileWatcher = new(FolderPath, VideoFileName)
+                        {
+                            NotifyFilter = NotifyFilters.LastWrite
+                                         | NotifyFilters.FileName,
+                            EnableRaisingEvents = true,
+                        };
+
+                        FileWatcher.Deleted += (source, e) => DeletedFile();
+                        FileWatcher.Renamed += (source, e) =>
+                        {
+                            VideoFileName = e.Name;
+                            if (VideoFileName is null)
+                            {
+                                DeletedFile();
+                                return;
+                            }
+
+                            VideoPath = Path.Combine(FolderPath, VideoFileName);
+                            FileWatcher.Filter = VideoFileName;
+                        };
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -182,6 +207,17 @@ namespace YoutubeDownloader
 
                 redo.Visibility = Visibility.Visible;
             }
+        }
+
+        private void DeletedFile()
+        {
+            FileWatcher.EnableRaisingEvents = false;
+            Dispatcher.Invoke(() =>
+            {
+                // TODO change style of button, add error sign or something, Tooltip : file deleted
+                open.Visibility = Visibility.Collapsed;
+                openFolder.Visibility = Visibility.Collapsed;
+            });
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
