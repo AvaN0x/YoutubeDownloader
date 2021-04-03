@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="YoutubeExplode" Version="6.0.0-alpha" />
+		<PackageReference Include="YoutubeExplode" Version="6.0.0-alpha2" />
 	</ItemGroup>
 
 	<ItemGroup>
