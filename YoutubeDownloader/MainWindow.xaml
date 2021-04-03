@@ -70,7 +70,8 @@
                     x:Name="download"
                     DockPanel.Dock="Right"
                     Margin="2"
-                    Style="{DynamicResource imageButton}" Click="download_Click">
+                    Style="{DynamicResource imageButton}"
+                    Click="download_Click">
                     <Image Source="res/download.png"
                        Stretch="None" />
                 </Button>

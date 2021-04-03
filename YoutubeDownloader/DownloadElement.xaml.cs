@@ -29,7 +29,7 @@ namespace YoutubeDownloader
         public string? VideoFileName { get; private set; }
         public string? VideoPath { get; private set; }
         private CancellationTokenSource CancelTokenSource { get; set; }
-        private FileSystemWatcher FileWatcher { get; set; }
+        private FileSystemWatcher? FileWatcher { get; set; }
         private IStreamInfo? StreamInfo { get; set; }
 
         public DownloadElement(string link)
@@ -211,12 +211,17 @@ namespace YoutubeDownloader
 
         private void DeletedFile()
         {
+            if (FileWatcher is null)
+                return;
+
             FileWatcher.EnableRaisingEvents = false;
             Dispatcher.Invoke(() =>
             {
-                // TODO change style of button, add error sign or something, Tooltip : file deleted
-                open.Visibility = Visibility.Collapsed;
-                openFolder.Visibility = Visibility.Collapsed;
+                open.IsEnabled = false;
+                open.ToolTip = "Deleted file";
+
+                openFolder.IsEnabled = false;
+                openFolder.ToolTip = "Deleted file";
             });
         }
 

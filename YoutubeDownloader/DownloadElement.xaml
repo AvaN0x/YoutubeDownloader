@@ -35,6 +35,7 @@
                 DockPanel.Dock="Right"
                 Margin="2"
                 Visibility="Collapsed"
+                ToolTipService.ShowOnDisabled="True"
                 Style="{DynamicResource imageButton}"
                 Click="openFolder_Click">
                 <Image Source="res/openFolder.png"
@@ -47,6 +48,7 @@
                 DockPanel.Dock="Right"
                 Margin="2"
                 Visibility="Collapsed"
+                ToolTipService.ShowOnDisabled="True"
                 Style="{DynamicResource imageButton}"
                 Click="open_Click">
                 <Image Source="res/run.png"

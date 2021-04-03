@@ -21,6 +21,34 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Background" Value="#60FFFFFF" />
                         </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid ToolTip="{TemplateBinding ToolTip}">
+                                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                            <Rectangle Width="16" Height="16">
+                                                <Rectangle.Fill>
+                                                    <DrawingBrush>
+                                                        <DrawingBrush.Drawing>
+                                                            <DrawingGroup>
+                                                                <DrawingGroup.Children>
+                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                                    <GeometryDrawing Brush="#FFE51400" Geometry="F1M13.3535,12.6465L12.6465,13.3535 11.4995,12.2075 10.3535,13.3535 9.6465,12.6465 10.7925,11.5005 9.6465,10.3535 10.3535,9.6465 11.4995,10.7925 12.6465,9.6465 13.3535,10.3535 12.2075,11.5005z M11.4995,8.0005C9.5675,8.0005 7.9995,9.5675 7.9995,11.5005 7.9995,13.4325 9.5675,15.0005 11.4995,15.0005 13.4325,15.0005 14.9995,13.4325 14.9995,11.5005 14.9995,9.5675 13.4325,8.0005 11.4995,8.0005" />
+                                                                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M12.207,11.5L13.353,12.646 12.646,13.354 11.5,12.207 10.353,13.354 9.646,12.646 10.793,11.5 9.646,10.354 10.353,9.646 11.5,10.793 12.646,9.646 13.353,10.354z" />
+                                                                </DrawingGroup.Children>
+                                                            </DrawingGroup>
+                                                        </DrawingBrush.Drawing>
+                                                    </DrawingBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
