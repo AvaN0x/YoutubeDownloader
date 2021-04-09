@@ -56,7 +56,7 @@
     </Style>
 
     <Style TargetType="TextBox">
-        <Setter Property="Background" Value="#202228" />
+        <Setter Property="Background" Value="#222429" />
         <Setter Property="BorderBrush" Value="#52585e" />
         <Setter Property="Foreground" Value="White" />
     </Style>
