@@ -99,7 +99,7 @@
         </DockPanel>
 
         <!-- Bottom bar -->
-        <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="4">
+        <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="2">
             <CheckBox x:Name="cb_OnTop"
                       Content="Always on Top"
                       HorizontalAlignment="Left"
@@ -107,7 +107,7 @@
                       FontSize="12"
                       Height="16"
                       Foreground="#fff"
-                      Margin="10 2 0 0"
+                      Margin="0"
                       Checked="OnTop_Checked"
                       Unchecked="OnTop_Unchecked" />
             <TextBlock
@@ -115,7 +115,7 @@
                 Foreground="#fff"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Margin="0 0 10 0">
+                Margin="0">
                 By
                 <Hyperlink NavigateUri="https://github.com/AvaN0x"
                            Foreground="#fff"
