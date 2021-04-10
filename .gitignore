@@ -337,3 +337,6 @@ ASALocalRun/
 
 # Windows folder icon
 desktop.ini
+
+# InnoSetup output folder
+Output/
