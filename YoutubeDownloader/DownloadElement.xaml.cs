@@ -126,10 +126,8 @@ namespace YoutubeDownloader
 
                 redo.Visibility = Visibility.Visible;
             }
-            catch (TransientFailureException e)
+            catch (TransientFailureException)
             {
-                Trace.WriteLine(e.Message);
-
                 ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
 
                 Cancel();
@@ -206,6 +204,17 @@ namespace YoutubeDownloader
                 }
 
                 redo.Visibility = Visibility.Visible;
+            }
+            catch (TransientFailureException)
+            {
+                Cancel();
+                redo.Visibility = Visibility.Visible;
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Cancel();
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.UnauthorizedAccess);
             }
         }
 
