@@ -21,7 +21,6 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile={#SourcePath}\LICENSE
-PrivilegesRequiredOverridesAllowed=dialog
 OutputBaseFilename=YoutubeDownloaderSetup
 SetupIconFile={#SourcePath}\YoutubeDownloader\res\icon.ico
 Compression=lzma
