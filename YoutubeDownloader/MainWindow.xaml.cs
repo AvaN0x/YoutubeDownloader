@@ -77,7 +77,7 @@ namespace YoutubeDownloader
         {
             if (cmbobox_extension.SelectedIndex != (int)Config.Extension)
             {
-                MessageBox.Show("call save");
+                Config.Extension = (Extension)cmbobox_extension.SelectedIndex;
                 SaveConfig(Config);
             }
         }
