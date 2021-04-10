@@ -30,6 +30,7 @@ namespace YoutubeDownloader
             lbl_warning.Text = ErrorType switch
             {
                 ErrorType.YoutubeTransientFailure => "There's a problem on Youtube's side. Please wait some time and try again.",
+                ErrorType.UnauthorizedAccess => "The program require admin permissions.",
                 _ => Enum.GetName(ErrorType),
             };
         }

@@ -77,7 +77,7 @@ namespace YoutubeDownloader
         {
             if (cmbobox_extension.SelectedIndex != (int)Config.Extension)
             {
-                Config.Extension = (Extension)cmbobox_extension.SelectedIndex;
+                MessageBox.Show("call save");
                 SaveConfig(Config);
             }
         }
@@ -237,7 +237,7 @@ namespace YoutubeDownloader
 
         public static Config LoadConfig()
         {
-            string configDir = Directory.GetCurrentDirectory();
+            string configDir = Config.ConfigDir;
             var configPath = Path.Combine(configDir, "config.json");
             if (File.Exists(configPath))
             {
@@ -262,20 +262,27 @@ namespace YoutubeDownloader
 
         public static void SaveConfig(Config conf)
         {
-            string configDir = Directory.GetCurrentDirectory();
-
-            var configPath = Path.Combine(configDir, "config.json");
-
-            if (!File.Exists(configPath))
-                Directory.CreateDirectory(configDir);
-
-            var ser = new JsonSerializer
+            try
             {
-                Formatting = Formatting.Indented
-            };
-            using var JSONstream = new StreamWriter(configPath);
-            ser.Serialize(JSONstream, conf);
-            JSONstream.Flush();
+                string configDir = Config.ConfigDir;
+
+                var configPath = Path.Combine(configDir, "config.json");
+
+                if (!File.Exists(configPath))
+                    Directory.CreateDirectory(configDir);
+
+                var ser = new JsonSerializer
+                {
+                    Formatting = Formatting.Indented
+                };
+                using var JSONstream = new StreamWriter(configPath);
+                ser.Serialize(JSONstream, conf);
+                JSONstream.Flush();
+            }
+            catch (Exception)
+            {
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.UnauthorizedAccess);
+            }
         }
     }
 }

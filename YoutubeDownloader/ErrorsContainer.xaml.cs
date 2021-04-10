@@ -18,7 +18,8 @@ namespace YoutubeDownloader
 {
     public enum ErrorType
     {
-        YoutubeTransientFailure
+        YoutubeTransientFailure,
+        UnauthorizedAccess
     }
 
     /// <summary>
