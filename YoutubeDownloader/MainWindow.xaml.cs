@@ -239,9 +239,9 @@ namespace YoutubeDownloader
         {
             string configDir = Config.ConfigDir;
             var configPath = Path.Combine(configDir, "config.json");
-            if (File.Exists(configPath))
+            try
             {
-                try
+                if (File.Exists(configPath))
                 {
                     var ser = new JsonSerializer();
                     using var stream = new JsonTextReader(new StreamReader(configPath))
@@ -250,11 +250,15 @@ namespace YoutubeDownloader
                     };
                     return ser.Deserialize<Config>(stream) ?? new Config();
                 }
-                catch (Exception e)
-                {
-                    File.Move(configPath, Path.Combine(configDir, "config_" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".json"));
-                    Trace.WriteLine(e.StackTrace);
-                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.ConfigIsNotAccessible);
+            }
+            catch (Exception)
+            {
+                File.Move(configPath, Path.Combine(configDir, "config_" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".json"));
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.ConfigReset);
             }
 
             return new Config();
@@ -281,7 +285,7 @@ namespace YoutubeDownloader
             }
             catch (Exception)
             {
-                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.UnauthorizedAccess);
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.ConfigIsNotAccessible);
             }
         }
     }

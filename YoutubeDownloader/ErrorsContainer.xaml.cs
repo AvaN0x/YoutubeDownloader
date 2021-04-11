@@ -19,7 +19,9 @@ namespace YoutubeDownloader
     public enum ErrorType
     {
         YoutubeTransientFailure,
-        UnauthorizedAccess
+        UnauthorizedAccess,
+        ConfigIsNotAccessible,
+        ConfigReset
     }
 
     /// <summary>

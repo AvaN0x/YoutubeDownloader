@@ -31,6 +31,8 @@ namespace YoutubeDownloader
             {
                 ErrorType.YoutubeTransientFailure => "There's a problem on Youtube's side. Please wait some time and try again.",
                 ErrorType.UnauthorizedAccess => "The program can't access the specified folder.",
+                ErrorType.ConfigReset => "The config file got reset. The old config file got renamed if you want to fix it.",
+                ErrorType.ConfigIsNotAccessible => "The config file is not accessible.\n(" + Config.ConfigDir + ")",
                 _ => Enum.GetName(ErrorType),
             };
         }
