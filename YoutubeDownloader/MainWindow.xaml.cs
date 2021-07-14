@@ -171,10 +171,6 @@ namespace YoutubeDownloader
                         }
                     }
                 }
-                catch (TransientFailureException)
-                {
-                    errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
-                }
                 catch (Exception)
                 {
                     var dl = new DownloadElement(link);

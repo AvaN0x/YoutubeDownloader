@@ -74,12 +74,12 @@ namespace YoutubeDownloader
                 {
                     case Extension.mp3:
                         VideoFileName = Utils.RemoveInvalidChars(video.Title) + ".mp3";
-                        StreamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+                        StreamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
                         break;
 
                     case Extension.mp4:
                     default:
-                        StreamInfo = streamManifest.GetMuxed().WithHighestVideoQuality();
+                        StreamInfo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality();
                         VideoFileName = null;
                         break;
                 }
@@ -126,7 +126,7 @@ namespace YoutubeDownloader
 
                 redo.Visibility = Visibility.Visible;
             }
-            catch (TransientFailureException)
+            catch (Exception)
             {
                 ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
 
@@ -205,16 +205,16 @@ namespace YoutubeDownloader
 
                 redo.Visibility = Visibility.Visible;
             }
-            catch (TransientFailureException)
-            {
-                Cancel();
-                redo.Visibility = Visibility.Visible;
-                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
-            }
             catch (UnauthorizedAccessException)
             {
                 Cancel();
                 ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.UnauthorizedAccess);
+            }
+            catch (Exception)
+            {
+                Cancel();
+                redo.Visibility = Visibility.Visible;
+                ((MainWindow)App.Current.MainWindow).errorsContainer.AddError(ErrorType.YoutubeTransientFailure);
             }
         }
 
