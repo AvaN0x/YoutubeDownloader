@@ -5,7 +5,7 @@
 
 ## NEEDS [Microsoft .NET 5](https://dotnet.microsoft.com/download)
 
-Go the link and click "Download .NET Runtime"
+Go to the link and click "Download .NET Runtime"
 
 ---
 
